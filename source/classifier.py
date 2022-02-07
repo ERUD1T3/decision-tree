@@ -9,3 +9,18 @@
 #   accurate the tree is with respect to the
 #   correct labels (% of correct classifications).
 #############################################################
+
+class classifier:
+
+    def __init__(self, tree, debug=False):
+        '''
+        Initialize the classifier object
+        '''
+        self.tree = tree
+        self.debug = debug
+
+    def classify(self, testing_path):
+        '''
+        Classify the testing data
+        '''
+        pass
