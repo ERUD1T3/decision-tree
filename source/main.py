@@ -8,6 +8,7 @@
 
 # imports
 import argparse
+from learner import learner as l
 
 
 def parse_args():
@@ -61,9 +62,9 @@ def main():
     attributes_path = args.attributes
     debugging = args.debug
 
-    
-    # run the program
 
+    # run the program
+    learner = l(attributes_path, training_path, testing_path, debugging)
 
 if __name__ == '__main__':
     main()
