@@ -12,12 +12,40 @@ import argparse
 
 def parse_args():
     '''parse the arguments for the titcactoe game'''
-    parser = argparse.ArgumentParser(description='Tic Tac Toe with AI')
-    # parser.add_argument('exp_path', type=str,
-    #                     help='path to the experience data (required)')
-    # parser.add_argument('--no-teacher', action='store_true', default=False,
-    #                     help='disable the teacher option, the model will learn through self-play')
-    # parser.add_argument('--ng', type=int , help='number of games to play against itself', default=False)
+
+    parser = argparse.ArgumentParser(
+        description='Decision Tree Learning program to classify both \
+            discrete and continuous data'
+    )
+
+    parser.add_argument(
+        '-a', '--attributes',
+        type=str,
+        required=True,
+        help='path to the attributes files (required)'
+    )
+
+    parser.add_argument(
+        '-d', '--training',
+        type=str, 
+        required=True,
+        help='path to the training data files (required)'
+    )
+    
+    parser.add_argument(
+        '-t', '--testing',
+        type=str , 
+        required=True,
+        help='path to the test data files (required)'
+    )
+
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        default=False,
+        help='debug mode, prints statements activated (optional)'
+    )
+    
     # parse arguments
     args = parser.parse_args()
     return args
@@ -26,9 +54,15 @@ def parse_args():
 def main():
     '''main of the program'''
     args = parse_args() # parse arguments
+    print(' args entered',args)
+
+    training_path = args.training
+    testing_path = args.testing
+    attributes_path = args.attributes
+    debugging = args.debug
+
     
-
-
+    # run the program
 
 
 if __name__ == '__main__':
