@@ -17,55 +17,59 @@ class learner:
         self.training_path = training_path
         self.testing_path =  testing_path
         self.debug = debug
+        self.attributes, self.order = self.read_attributes(self.attr_path)
+        self.training = self.read_data(self.training_path)
+        self.testing = self.read_data(self.testing_path)
 
-        self.attributes, self.final_attr_name = self.read_attributes(self.attr_path)
 
 
-    # TODO: implement the attribute reader
-    def read_attributes(self, attr_path):
+    def read_attributes(self, attr_path:str):
         '''
         Read in the attributes
         '''
 
         attributes = {}
-        final_attr_name = None
-        is_final = False
+        order = []
 
          # read in the attributes
-        with open(self.attr_path, 'r') as f:
+        with open(attr_path, 'r') as f:
             for line in f:
                 if len(line) > 1:
                     words = line.strip().split()
                     
                     # storing the attributes
                     attributes[words[0]] = words[1:]
+                    order.append(words[0])
 
-                    if is_final:
-                        final_attr_name = words[0]
-                else:
-                    is_final = True
                 
-
-
-
         if self.debug:
             print('Attributes: ', attributes)
-            print('Final Attribute Name: ', final_attr_name)
+            print('Order: ', order)
+            print('Final Attribute: ', order[-1])
 
-        return attributes, final_attr_name
+        return attributes, order
 
-    def read_training_data(self, training_path):
-        '''
-        Read in the training data
-        '''
-        pass
 
-    def read_testing_data(self, testing_path):
+    def read_data(self, data_path: str):
         '''
-        read in the testing data
+        Read in the training data and testing data
         '''
-        pass
 
+        data = []
+
+         # read in the attributes
+        with open(data_path, 'r') as f:
+            for line in f:
+                    words = line.strip().split()
+                    data.append(words)
+               
+        if self.debug:
+            print('Read data: ', data)
+
+        return data
+
+
+    # TODO: implement the decision tree learning algorithm
     def learn(self):
         '''learn the decision tree'''
         pass
