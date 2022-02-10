@@ -7,7 +7,9 @@
 #   output a tree (or rule set)
 #############################################################
 
-import math
+from distutils.log import debug
+from math import log2
+from dtree import DNode, DTree
 
 class learner:
 
@@ -74,8 +76,6 @@ class learner:
 
         return data
 
-
-    # TODO: test
     def entropy(self, data):
         '''
         Calculate the entropy of a data set
@@ -84,21 +84,30 @@ class learner:
         target_classes = self.attributes[self.order[-1]] 
         entropy = 0.0
         n = len(data)
-        c_dist = {c: 0 for c in target_classes}
+        c_dist = {c: 0.0 for c in target_classes}
         
         # getting the count for the target classes
         for d in data:
             c_dist[d[-1]] += 1
 
+        if self.debug:
+            print('distribution: ', c_dist)
+
         # calculating the entropy
         for c in target_classes:
+
+            if self.debug:
+                print('Class: ', c, ' prob: ', c_dist[c] / n)
+
             p = c_dist[c] / n
-            entropy += -p * math.log2(p)
+
+            if p != 0:
+                entropy += -p * log2(p)
+            # else entropy += 0 but we don't need to do that
         
         return entropy
 
-    # TODO: test
-    def gain(self, data, attribute):
+    def gain(self, data, attribute: str):
         '''
         Calculate the information gain
         '''
@@ -124,7 +133,45 @@ class learner:
         
         return prior - posterior
 
+    def get_best_attribute(self, data, attrs_to_test: list()):
+        '''
+        Get the best attribute to split the data
+        '''
+        # getting the attributes
+        attr_iter = iter(attrs_to_test)
+
+        # getting the first attribute
+        attr = next(attr_iter)
+
+        max_gain, max_attr = self.gain(data, attr), attr
+        if self.debug:
+            print('Gain for attribute: ', max_attr, ' is: ', max_gain)
+
+        # getting the best attribute for root node
+        for attr in attr_iter:
+            # getting the gain for each attribute
+            gain = self.gain(data, attr)
+            if self.debug:
+                print('Gain for attribute: ', attr, ' is: ', gain)
+
+            # updating the best attribute
+            if gain > max_gain:
+                max_gain, max_attr = gain, attr
+
+        if debug:
+            print('Best attribute: ', max_attr, ' with gain: ', max_gain)
+
+        return max_attr
+
+
     # TODO: implement the decision tree learning algorithm
-    def learn(self):
+    def learn(self, training=None):
         '''learn the decision tree'''
-        pass
+        training = self.training if training is None else training
+        # initialize the tree
+        tree = DTree(self.attributes, self.order, self.debug)
+
+        # setting the root node
+        tree.root = DNode(self.get_best_attribute(training, self.order[:-1]))
+            
+            

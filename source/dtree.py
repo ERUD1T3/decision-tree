@@ -9,7 +9,7 @@
 #   deeper nodes are indented more, leaves
 #   have class distribution) and Rule set printer.
 #############################################################
-class Node:
+class DNode:
     def __init__(self, attribute, parent=None):
         self.attribute = attribute
         self.parent = parent # parent node
@@ -46,17 +46,17 @@ class DTree:
         pass
 
 
-    def build(self, training):
-        '''
-        Build the decision tree
-        '''
-        pass
+    # def build(self, training):
+    #     '''
+    #     Build the decision tree
+    #     '''
+    #     pass
 
 
-    def test(self, testing):
-        '''
-        Test the decision tree
-        '''
-        pass
+    # def test(self, testing):
+    #     '''
+    #     Test the decision tree
+    #     '''
+    #     pass
 
    

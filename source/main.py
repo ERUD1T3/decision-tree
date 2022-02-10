@@ -73,6 +73,7 @@ def main():
     
     # run the program
     learner = l(attributes_path, training_path, testing_path, debugging)
-
+    learner.learn()
+    
 if __name__ == '__main__':
     main()
