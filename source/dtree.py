@@ -42,7 +42,7 @@ class DTree:
 
     def print_tree(self, node=None, indent=0):
         '''
-        Display the tree
+        Display the tree via pre-order traversal
         '''
         pass
 
