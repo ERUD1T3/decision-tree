@@ -22,12 +22,10 @@ class learner:
         self.testing_path =  testing_path
         self.debug = debug
         # attributes and their order
-        self.attributes, self.order = self.read_attributes(self.attr_path)
+        self.attr_values, self.order = self.read_attributes(self.attr_path)
         self.training = self.read_data(self.training_path)
         self.testing = self.read_data(self.testing_path)
         self.n_examples = len(self.training)
-        self.n_pos = 0 # number of positive examples
-        self.n_neg = 0 # number of negative examples
 
 
 
@@ -55,6 +53,10 @@ class learner:
             print('Order: ', order)
             print('Final Attribute: ', order[-1])
 
+        if len(order) == 0:
+            raise Exception('No attributes found')
+
+
         return attributes, order
 
 
@@ -74,6 +76,9 @@ class learner:
         if self.debug:
             print('Read data: ', data)
 
+        if len(data) == 0:
+            raise Exception('No data found')
+
         return data
 
     def entropy(self, data):
@@ -81,7 +86,7 @@ class learner:
         Calculate the entropy of a data set
         '''
         # reading values of the target attribute
-        target_classes = self.attributes[self.order[-1]] 
+        target_classes = self.attr_values[self.order[-1]] 
         entropy = 0.0
         n = len(data)
         c_dist = {c: 0.0 for c in target_classes}
@@ -116,7 +121,7 @@ class learner:
         prior = self.entropy(data)
 
         # getting the values of the attribute
-        values = self.attributes[attribute]
+        values = self.attr_values[attribute]
 
         attr_index = self.order.index(attribute)
 
@@ -163,15 +168,104 @@ class learner:
 
         return max_attr
 
+    # TODO: test this function
+    def are_same(self, data):
+        '''
+        Check if all the examples are the same final class
+        '''
+        # getting data iterator
+        data_iter = iter(data)
 
-    # TODO: implement the decision tree learning algorithm
+        # getting the first example
+        first = next(data_iter)
+
+        # checking if all the examples are the same
+        for d in data_iter:
+            if d[-1] != first[-1]:
+                return False
+
+        return True
+
+    # TODO: test this function
+    def get_best_class(self, data):
+        '''
+        return the best class in the data
+        Currently the best class is the most common class in the data
+        '''
+
+        # getting the classes
+        classes = self.attr_values[self.order[-1]]
+
+        # getting the counts
+        counts = {c: 0 for c in classes}
+        for d in data:
+            counts[d[-1]] += 1
+
+        # getting the best class
+        best_class = max(counts, key=counts.get)
+
+        if self.debug:
+            print('Best class: ', best_class)
+
+        return best_class
+    
+
+
+    # TODO: fix this function
+    def ID3_build(self, data, target_attr, attrs_to_test: list()):
+        '''
+        Build a decision tree using ID3
+        '''
+        # check if all the examples are the same
+        if self.are_same(data):
+            return DNode(data[0][-1])
+
+        # check if there are no attributes to test
+        if len(attrs_to_test) == 0:
+            return DNode(self.get_best_class(data))
+
+        # get the best attribute to split the data
+        best_attr = self.get_best_attribute(data, attrs_to_test)
+
+        # get the values of the attribute
+        values = self.attr_values[best_attr]
+
+        # create the root node
+        root = DNode(best_attr)
+
+        # create the children nodes
+        for v in values:
+            # getting the subset of the data
+            subset = [d for d in data if d[self.order.index(best_attr)] == v]
+
+            # if the subset is empty
+            if len(subset) == 0:
+                # set the child to the most common class
+                root.add_child(v, DNode(self.get_best_class(data)))
+            else:
+                # remove the attribute from the list of attributes
+                attrs_to_test.remove(best_attr)
+                # create the child node
+                root.add_child(v, self.ID3_build(subset, target_attr, attrs_to_test))
+
+        return root
+
+
+    # TODO: test this function
     def learn(self, training=None):
         '''learn the decision tree'''
         training = self.training if training is None else training
-        # initialize the tree
-        tree = DTree(self.attributes, self.order, self.debug)
 
-        # setting the root node
-        tree.root = DNode(self.get_best_attribute(training, self.order[:-1]))
-            
+        # creating the tree
+        tree = DTree(self.attr_values, self.order, self.debug)
+
+        # learning the tree using ID3
+        tree.root = self.ID3_build(training, self.order[-1], self.order[:-1])
+
+        # printing the tree
+        tree.print_tree()
+        
+        return tree
+
+        
             
