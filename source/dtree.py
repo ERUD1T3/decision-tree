@@ -11,12 +11,19 @@
 #############################################################
 class DNode:
     def __init__(self, attribute, parent=None):
+        '''
+        Inintialize the node
+        '''
         self.attribute = attribute
         self.parent = parent # parent node
         self.children = {} # keys are attribute values
         # self.class_distribution = {}
 
-
+    def add_child(self, value, child):
+        '''
+        Add a child node
+        '''
+        self.children[value] = child
 
 
 class DTree:
@@ -44,19 +51,5 @@ class DTree:
         Display the rules
         '''
         pass
-
-
-    # def build(self, training):
-    #     '''
-    #     Build the decision tree
-    #     '''
-    #     pass
-
-
-    # def test(self, testing):
-    #     '''
-    #     Test the decision tree
-    #     '''
-    #     pass
 
    
