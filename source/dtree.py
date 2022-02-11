@@ -17,7 +17,8 @@ class DNode:
         self.attribute = attribute
         self.parent = parent # parent node
         self.children = {} # keys are attribute values
-        # self.class_distribution = {}
+        self.class_distribution = [] # keys are class values
+        self.is_terminal = False
 
     def add_child(self, value, child):
         '''
@@ -27,7 +28,6 @@ class DNode:
 
 
 class DTree:
-
     def __init__(self, attributes, order, debug=False):
         '''
         Initialize the tree object
@@ -40,13 +40,38 @@ class DTree:
         self.root = None
 
 
-    def print_tree(self, node=None, indent=0):
+    # TODO: test this function
+    def preorder(self, node, indent):
+        '''
+        Print a node
+        '''
+        if node is None:
+            return
+
+        attr = node.attribute
+
+        # visiting a leaf node
+        if node.is_terminal:
+            c_dist = node.class_distribution
+            print(f': {attr} (', ','.join(c_dist), ')', end=' ')
+        else:
+            # visiting a non-leaf node children
+            for value, child in node.children.items():
+                print('\n')
+                print('| ' * indent, f'{attr} = {value}', end=' ')
+                self.preorder(child, indent + 1)
+
+        
+
+    def print_tree(self):
         '''
         Display the tree via pre-order traversal
         '''
-        pass
+        # recusively print the tree starting at the root
+        self.preorder(self.root, 0)
 
-    def print_rules(self, node=None, indent=0):
+
+    def print_rules(self):
         '''
         Display the rules
         '''

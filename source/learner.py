@@ -7,11 +7,10 @@
 #   output a tree (or rule set)
 #############################################################
 
-from distutils.log import debug
 from math import log2
 from dtree import DNode, DTree
 
-class learner:
+class Learner:
 
     def __init__(self, attr_path, training_path, testing_path, debug=False):
         '''
@@ -163,7 +162,7 @@ class learner:
             if gain > max_gain:
                 max_gain, max_attr = gain, attr
 
-        if debug:
+        if self.debug:
             print('Best attribute: ', max_attr, ' with gain: ', max_gain)
 
         return max_attr
@@ -209,6 +208,24 @@ class learner:
 
         return best_class
     
+    def get_class_distribution(self, data):
+        '''
+        return the class distribution of the data
+        '''
+
+        # getting the classes
+        classes = self.attr_values[self.order[-1]]
+
+        # getting the counts
+        counts = [0 for _ in classes]
+        for d in data:
+            counts[classes.index(d[-1])] += 1
+
+        if self.debug:
+            print('Classes: ', classes)
+            print('Class distribution: ', counts)
+
+        return counts
 
 
     # TODO: fix this function
@@ -230,6 +247,9 @@ class learner:
         # get the values of the attribute
         values = self.attr_values[best_attr]
 
+        # remove the attribute from the list of attributes to test
+        attrs_to_test.remove(best_attr)
+
         # create the root node
         root = DNode(best_attr)
 
@@ -241,12 +261,19 @@ class learner:
             # if the subset is empty
             if len(subset) == 0:
                 # set the child to the most common class
-                root.add_child(v, DNode(self.get_best_class(data)))
+                leaf = DNode(self.get_best_class(data))
+                leaf.parent = root
+                leaf.is_terminal = True
+                leaf.class_distribution = self.get_class_distribution(data)
+                root.add_child(v, leaf)
+
             else:
                 # remove the attribute from the list of attributes
-                attrs_to_test.remove(best_attr)
+                
+                child = self.ID3_build(subset, target_attr, attrs_to_test)
+                child.parent = root
                 # create the child node
-                root.add_child(v, self.ID3_build(subset, target_attr, attrs_to_test))
+                root.add_child(v, child)
 
         return root
 
@@ -263,7 +290,8 @@ class learner:
         tree.root = self.ID3_build(training, self.order[-1], self.order[:-1])
 
         # printing the tree
-        tree.print_tree()
+        if self.debug:
+            tree.print_tree()
         
         return tree
 
