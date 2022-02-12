@@ -122,6 +122,7 @@ class Learner:
         
         return entropy
 
+    # TODO: test
     def gain(self, data, attribute: str):
         '''
         Calculate the information gain
@@ -129,22 +130,44 @@ class Learner:
 
         # calulating prior entropy
         prior = self.entropy(data)
-
-        # getting the values of the attribute
-        values = self.attr_values[attribute]
-
-        attr_index = self.order.index(attribute)
-
-        # calculating the entropys over the subset
         posterior = 0.0
-        for v in values:
+
+        # case for continuous data
+        if '<' in attribute or '>' in attribute:
             # getting the subset of the data
-            subset = [d for d in data if d[attr_index] == v]
-            # calculating the entropy
-            p = len(subset) / len(data)
-            e = self.entropy(subset)
-            # calculating the gain
-            posterior += p * e
+            pos_subset, neg_subset = [], []
+            for d in data:
+                if self.eval_continuous(d, attribute):
+                    pos_subset.append(d)
+                else:
+                    neg_subset.append(d)
+
+            # getting the probabilities for the subsets
+            p_pos = len(pos_subset) / len(data)
+            p_neg = len(neg_subset) / len(data)
+
+            # calculating the entropy for the subsets
+            e_pos = self.entropy(pos_subset)
+            e_neg = self.entropy(neg_subset)
+
+            # calculating the posterior entropy
+            posterior = p_pos * e_pos + p_neg * e_neg
+
+        # case of discrete data
+        else:
+            # getting the values of the attribute
+            values = self.attr_values[attribute]
+            attr_index = self.order.index(attribute)
+
+            # calculating the entropys over the subset
+            for v in values:
+                # getting the subset of the data
+                subset = [d for d in data if d[attr_index] == v]
+                # calculating the entropy
+                p = len(subset) / len(data)
+                e = self.entropy(subset)
+                # calculating the gain
+                posterior += p * e
         
         return prior - posterior
 
@@ -301,7 +324,7 @@ class Learner:
         return self.tmp_order, self.tmp_attr_values
 
 
-    def eval_continuous(self, attr, datum:list()):
+    def eval_continuous(self, datum, attr):
         '''
         Takes a the discretized version of a
         continuous attribute and the datum and 
