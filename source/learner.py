@@ -148,6 +148,7 @@ class Learner:
         
         return prior - posterior
 
+    # TODO: add the continuous data
     def get_best_attribute(self, data, attrs_to_test: list()):
         '''
         Get the best attribute to split the data
@@ -236,7 +237,7 @@ class Learner:
 
         return counts
 
-
+    # TODO: Test this function
     def continuous_to_discrete(self, attr, data):
         '''
         Convert the continuous attribute to discrete
@@ -281,50 +282,37 @@ class Learner:
                 print('New attribute less than: ', new_attr_lt)
 
             # add the new attributes to the attribute list
-            self.attr_values[new_attr_gt] = ['T', 'F']
-            self.attr_values[new_attr_lt] = ['T', 'F']
+            self.tmp_attr_values[new_attr_gt] = ['T', 'F']
+            self.tmp_attr_values[new_attr_lt] = ['T', 'F']
 
             # add the new attributes to the attribute order
-            self.order.append(new_attr_gt)
-            self.order.append(new_attr_lt)
+            self.tmp_order.append(new_attr_gt)
+            self.tmp_order.append(new_attr_lt)
 
         # remove the old attribute (maybe not necessary)
         # self.attr_values.pop(attr)
         # self.order.remove(attr)
 
         if self.debug:
-            print('New attribute order: ', self.order)
-            print('New attribute values: ', self.attr_values)
+            print('New attribute order: ', self.tmp_order)
+            print('New attribute values: ', self.tmp_attr_values)
 
-        
+        return self.tmp_order, self.tmp_attr_values
 
 
-    def get_continuous_attributes(self, data):
+    # TODO: add function to test attributes
+    def test_attribute(self, attr, data):
         '''
-        Get the continuous attributes
+        Takes an attribute, either discrete or continuous
         '''
-        # getting the attributes
-        attrs = self.attr_values.keys()
-
-        
-        # # getting the continuous attributes
-        # continuous_attrs = []
-        # for attr in attrs:
-        #     if attr != self.order[-1]:
-        #         if self.attr_values[attr][0] == 'continuous':
-        #             continuous_attrs.append(attr)
+        pass
 
 
-        # if self.debug:
-        #     print('Continuous attributes: ', continuous_attrs)
-
-        # attr_map = {attr: [] for attr in attrs}
-
-        # for d in data:
-
-
-        # return continuous_attrs
-
+    def is_continuous(self, attr):
+        '''
+        check if an attribute is continuous
+        '''
+        return self.attr_values[attr][0] == 'continuous'
     
 
 
