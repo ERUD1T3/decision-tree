@@ -132,7 +132,7 @@ class Learner:
         prior = self.entropy(data)
         posterior = 0.0
 
-        # case for continuous data
+        # case for continuous attribute
         if '<' in attribute or '>' in attribute:
             # getting the subset of the data
             pos_subset, neg_subset = [], []
@@ -171,25 +171,67 @@ class Learner:
         
         return prior - posterior
 
-    # TODO: add the continuous data
+    def get_best_discretized_attribute(self, data, d_attr_to_test):
+        '''
+        Get best discretize attribute
+        '''
+        # getting the attributes
+        attr_iter = iter(d_attr_to_test)
+
+        # getting the first attribute
+        attr = next(attr_iter)
+
+        # getting the best attribute
+        best_gain, best_attr = self.gain(data, attr), attr
+
+        # getting the best attribute
+        for attr in attr_iter:
+            # getting the gain
+            gain = self.gain(data, attr)
+            if gain > best_gain:
+                best_attr, best_gain = attr, gain
+
+        return best_gain, best_attr
+
+    # TODO: test
     def get_best_attribute(self, data, attrs_to_test: list()):
         '''
         Get the best attribute to split the data
         '''
         # getting the attributes
         attr_iter = iter(attrs_to_test)
-
         # getting the first attribute
         attr = next(attr_iter)
+        gain = 0.0
+        max_gain, max_attr = 0.0, None
 
-        max_gain, max_attr = self.gain(data, attr), attr
-        if self.debug:
-            print('Gain for attribute: ', max_attr, ' is: ', max_gain)
+        # attribute is continuous
+        if self.is_continuous(attr):
+            # get discretized attributes from attr
+            discretized, _ = self.continuous_to_discrete(attr, data)
+            # get the best discretized attribute
+            max_gain, max_attr = self.get_best_discretized_attribute(data, discretized)
+        # attribute is discrete
+        else:
+            max_gain, max_attr = self.gain(data, attr), attr
+
+            if self.debug:
+                print('Gain for attribute: ', max_attr, ' is: ', max_gain)
 
         # getting the best attribute for root node
-        for attr in attr_iter:
-            # getting the gain for each attribute
-            gain = self.gain(data, attr)
+        for a in attr_iter:
+            # attribute is continuous
+            if self.is_continuous(a):
+                # get discretized attributes from attr
+                discretized, _ = self.continuous_to_discrete(a, data)
+                # get the best discretized attribute
+                gain, attr = self.get_best_discretized_attribute(data, discretized)
+            # attribute is discrete
+            else:
+                # getting the gain for each attribute
+                gain = self.gain(data, a)
+                attr = a
+
             if self.debug:
                 print('Gain for attribute: ', attr, ' is: ', gain)
 
@@ -202,6 +244,7 @@ class Learner:
 
         return max_attr
 
+    
     def are_same(self, data):
         '''
         Check if all the examples are the same final class
