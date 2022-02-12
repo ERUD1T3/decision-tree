@@ -58,7 +58,7 @@ class DTree:
             # visiting a non-leaf node children
             for value, child in node.children.items():
                 print('\n', end='')
-                print('| ' * indent, f'{attr} = {value}', end=' ')
+                print(('|  ' * indent) + f'{attr} = {value}', end=' ')
                 self.preorder(child, indent + 1)
 
     
