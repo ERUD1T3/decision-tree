@@ -7,6 +7,7 @@
 #   output a tree (or rule set)
 #############################################################
 
+from distutils.log import debug
 from math import log2
 from dtree import DNode, DTree
 
@@ -25,6 +26,10 @@ class Learner:
         self.training = self.read_data(self.training_path)
         self.testing = self.read_data(self.testing_path)
         self.n_examples = len(self.training)
+
+        # tracking attributes generated from continuous data
+        self.tmp_attr_values = {}
+        self.tmp_order = []
 
 
 
@@ -230,6 +235,98 @@ class Learner:
             print('Class distribution: ', counts)
 
         return counts
+
+
+    def continuous_to_discrete(self, attr, data):
+        '''
+        Convert the continuous attribute to discrete
+        '''
+        candidates_thresholds = []
+
+        # getting the attribute target values
+        # attr_target_pairs = {d[self.order.index(attr)]:d[-1] for d in data}
+        attr_values = [d[self.order.index(attr)] for d in data]
+        target_values = [d[-1] for d in data]
+
+        # sort both list by the attribute values
+        attr_values, target_values = zip(*sorted(zip(attr_values, target_values)))
+
+        if self.debug:
+            print('Sorted attribute values: ', attr_values)
+            print('Sorted target values: ', target_values)
+
+        low, high = 0, 1
+        # getting candidate thresholds
+        while high < len(attr_values):
+            # find the change in the target values
+            if target_values[low] != target_values[high]:
+                # calculate the threshold
+                threshold = (attr_values[low] + attr_values[high]) / 2
+                candidates_thresholds.append(threshold)
+
+            low_index += 1
+            high_index += 1
+
+        if self.debug:
+            print('Candidate thresholds: ', candidates_thresholds)
+        
+        # create attributes based on the candidate thresholds
+        for threshold in candidates_thresholds:
+            # make a new attributes
+            new_attr_gt = f'{attr} > {threshold}'
+            new_attr_lt = f'{attr} < {threshold}'
+
+            if self.debug:
+                print('New attribute greater than: ', new_attr_gt)
+                print('New attribute less than: ', new_attr_lt)
+
+            # add the new attributes to the attribute list
+            self.attr_values[new_attr_gt] = ['T', 'F']
+            self.attr_values[new_attr_lt] = ['T', 'F']
+
+            # add the new attributes to the attribute order
+            self.order.append(new_attr_gt)
+            self.order.append(new_attr_lt)
+
+        # remove the old attribute (maybe not necessary)
+        # self.attr_values.pop(attr)
+        # self.order.remove(attr)
+
+        if self.debug:
+            print('New attribute order: ', self.order)
+            print('New attribute values: ', self.attr_values)
+
+        
+
+
+    def get_continuous_attributes(self, data):
+        '''
+        Get the continuous attributes
+        '''
+        # getting the attributes
+        attrs = self.attr_values.keys()
+
+        
+        # # getting the continuous attributes
+        # continuous_attrs = []
+        # for attr in attrs:
+        #     if attr != self.order[-1]:
+        #         if self.attr_values[attr][0] == 'continuous':
+        #             continuous_attrs.append(attr)
+
+
+        # if self.debug:
+        #     print('Continuous attributes: ', continuous_attrs)
+
+        # attr_map = {attr: [] for attr in attrs}
+
+        # for d in data:
+
+
+        # return continuous_attrs
+
+    
+
 
 
     def ID3_build(self, data, target_attr, attrs_to_test: list()):

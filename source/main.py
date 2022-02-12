@@ -27,13 +27,6 @@ def parse_args():
     )
 
     parser.add_argument(
-        '--continuous',
-        action='store_true',
-        default=False,
-        help='indicate that the attributes are continuous or discrete (optional)'
-    )
-
-    parser.add_argument(
         '-d', '--training',
         type=str, 
         required=True,
@@ -68,7 +61,7 @@ def main():
     testing_path = args.testing
     attributes_path = args.attributes
     debugging = args.debug
-    is_continuous = args.continuous
+
 
     
     # run the program
