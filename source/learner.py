@@ -87,7 +87,13 @@ class Learner:
         # reading values of the target attribute
         target_classes = self.attr_values[self.order[-1]] 
         entropy = 0.0
+
         n = len(data)
+
+        # for no data available, return 0.0
+        if n == 0:
+            return 0.0
+
         c_dist = {c: 0.0 for c in target_classes}
         
         # getting the count for the target classes
@@ -167,7 +173,6 @@ class Learner:
 
         return max_attr
 
-    # TODO: test this function
     def are_same(self, data):
         '''
         Check if all the examples are the same final class
@@ -185,7 +190,6 @@ class Learner:
 
         return True
 
-    # TODO: test this function
     def get_best_class(self, data):
         '''
         return the best class in the data
@@ -228,18 +232,28 @@ class Learner:
         return counts
 
 
-    # TODO: fix this function
     def ID3_build(self, data, target_attr, attrs_to_test: list()):
         '''
         Build a decision tree using ID3
         '''
+
+        # check if there is no data
+        # if len(data) == 0:
+        #     return None
+
         # check if all the examples are the same
         if self.are_same(data):
-            return DNode(data[0][-1])
+            root = DNode(data[0][-1])
+            root.is_terminal = True
+            root.class_distribution = self.get_class_distribution(data)
+            return root
 
         # check if there are no attributes to test
         if len(attrs_to_test) == 0:
-            return DNode(self.get_best_class(data))
+            root = DNode(self.get_best_class(data))
+            root.is_terminal = True
+            root.class_distribution = self.get_class_distribution(data)
+            return root
 
         # get the best attribute to split the data
         best_attr = self.get_best_attribute(data, attrs_to_test)
@@ -257,6 +271,9 @@ class Learner:
         for v in values:
             # getting the subset of the data
             subset = [d for d in data if d[self.order.index(best_attr)] == v]
+
+            if self.debug:
+                print('Subset: ', subset)
 
             # if the subset is empty
             if len(subset) == 0:
@@ -278,13 +295,13 @@ class Learner:
         return root
 
 
-    # TODO: test this function
     def learn(self, training=None):
         '''learn the decision tree'''
         training = self.training if training is None else training
 
         # creating the tree
         tree = DTree(self.attr_values, self.order, self.debug)
+
 
         # learning the tree using ID3
         tree.root = self.ID3_build(training, self.order[-1], self.order[:-1])

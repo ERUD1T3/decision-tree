@@ -9,7 +9,7 @@
 #   accurate the tree is with respect to the
 #   correct labels (% of correct classifications).
 #############################################################
-
+from dtree import DNode, DTree
 class classifier:
 
     def __init__(self, tree, debug=False):
@@ -19,7 +19,7 @@ class classifier:
         self.tree = tree
         self.debug = debug
 
-    def classify(self, testing_path):
+    def classify(self, tes):
         '''
         Classify the testing data
         '''

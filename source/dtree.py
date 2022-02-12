@@ -40,7 +40,6 @@ class DTree:
         self.root = None
 
 
-    # TODO: test this function
     def preorder(self, node, indent):
         '''
         Print a node
@@ -53,15 +52,16 @@ class DTree:
         # visiting a leaf node
         if node.is_terminal:
             c_dist = node.class_distribution
-            print(f': {attr} (', ','.join(c_dist), ')', end=' ')
+            c_dist_str =  [str(c) for c in c_dist]
+            print(f': {attr} (' + ','.join(c_dist_str) + ')', end=' ')
         else:
             # visiting a non-leaf node children
             for value, child in node.children.items():
-                print('\n')
+                print('\n', end='')
                 print('| ' * indent, f'{attr} = {value}', end=' ')
                 self.preorder(child, indent + 1)
 
-        
+    
 
     def print_tree(self):
         '''
