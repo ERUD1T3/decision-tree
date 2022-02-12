@@ -276,6 +276,7 @@ class Learner:
             # make a new attributes
             new_attr_gt = f'{attr} > {threshold}'
             new_attr_lt = f'{attr} < {threshold}'
+            # should there be equal? No, very unlikely
 
             if self.debug:
                 print('New attribute greater than: ', new_attr_gt)
@@ -300,12 +301,26 @@ class Learner:
         return self.tmp_order, self.tmp_attr_values
 
 
-    # TODO: add function to test attributes
-    def test_attribute(self, attr, data):
+    def eval_continuous(self, attr, datum:list()):
         '''
-        Takes an attribute, either discrete or continuous
+        Takes a the discretized version of a
+        continuous attribute and the datum and 
+        returns true if the inequality is satisfied,
+        false otherwise
         '''
-        pass
+        # get less than attribute
+        decomp = attr.split('<')
+        if len(decomp) == 2:
+            attr_lt = decomp[0]
+            threshold = float(decomp[1])
+            return datum[self.order.index(attr_lt)] < threshold
+
+        # get greater than attribute
+        decomp = attr.split('>')
+        if len(decomp) == 2:
+            attr_gt = decomp[0]
+            threshold = float(decomp[1])
+            return datum[self.order.index(attr_gt)] > threshold
 
 
     def is_continuous(self, attr):
