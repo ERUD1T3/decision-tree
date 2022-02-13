@@ -502,7 +502,7 @@ class Learner:
         training = self.training if training is None else training
 
         # creating the tree
-        tree = DTree(self.attr_values, self.order, self.debug)
+        tree = DTree(self.debug)
 
 
         # learning the tree using ID3
@@ -514,7 +514,7 @@ class Learner:
         
         return tree
 
-    # TODO: test this function
+
     def classify(self, tree, instance):
         '''
         Classify an instance
@@ -555,7 +555,7 @@ class Learner:
 
         return output_c, c_dist
 
-    # TODO: test this function
+
     def test(self, tree, testing=None):
         '''test the decision tree'''
         testing = self.testing if testing is None else testing
@@ -581,3 +581,34 @@ class Learner:
             print(f'Accuracy: {accuracy} %')
 
         return accuracy
+
+    # TODO: test
+    def tree_to_rules(self, tree):
+        '''
+        Convert the decision tree to a set of rules
+        '''
+        rules = []
+        # collect the rules
+        self.tree_to_rules_rec(tree.root, rules)
+        tree.rules = rules
+
+        if self.debug:
+            tree.print_rules()
+
+        return rules
+
+    def tree_to_rules_rec(self, node, rules):
+        '''
+        Recursively collect the rules
+        '''
+        # if the node is a leaf node
+        if node.is_terminal:
+            # get the rule
+            rule = node.get_rule()
+            # add the rule to the list
+            rules.append(rule)
+        
+        else:
+            # get the children rules
+            for child in node.children.values():
+                self.tree_to_rules_rec(child, rules)

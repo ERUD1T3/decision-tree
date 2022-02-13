@@ -75,6 +75,13 @@ def main():
     print('\nTesting the tree on testing data\n')
     # testing tree on test data
     dtl.test(tree)
+
+    print('\nPrinting the decision tree rules\n')
+    # print the rules
+    dtl.tree_to_rules(tree)    
+
+
+
     
 if __name__ == '__main__':
     main()

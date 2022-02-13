@@ -26,19 +26,43 @@ class DNode:
         '''
         self.children[value] = child
 
+    def get_class_dist_str(self) -> str:
+        '''
+        Return the string representation of
+        the class distribution 
+        '''
+        c_dist = self.class_distribution
+        c_dist_str =  [str(c) for c in c_dist]
+
+        return '(' + ','.join(c_dist_str) + ')'
+
+
+    # TODO: test this function
+    def get_rule(self):
+        '''
+        Get the rule for the node
+        '''
+        rule = ''
+        if self.parent:
+            rule += self.parent.get_rule()
+        if self.attribute:
+            if self.is_terminal:
+                rule += f' => {self.attribute} {self.get_class_dist_str()}'
+            elif self.parent is None:
+                rule += f'{self.attribute} = {self.value}'
+            else:
+                rule += f' ^ {self.attribute} = {self.value}'
+        return rule
 
 class DTree:
-    def __init__(self, attributes, order, debug=False):
+    def __init__(self, debug=False):
         '''
         Initialize the tree object
         '''
 
-        # self.attributes = attributes
-        # self.order = order
         self.debug = debug
-
         self.root = None
-
+        self.rules = []
 
     def preorder(self, node, indent):
         '''
@@ -51,9 +75,9 @@ class DTree:
 
         # visiting a leaf node
         if node.is_terminal:
-            c_dist = node.class_distribution
-            c_dist_str =  [str(c) for c in c_dist]
-            print(f': {attr} (' + ','.join(c_dist_str) + ')', end=' ')
+            # c_dist = node.class_distribution
+            # c_dist_str =  [str(c) for c in c_dist]
+            print(f': {attr} {node.get_class_dist_str()}', end=' ')
         else:
             # visiting a non-leaf node children
             for value, child in node.children.items():
@@ -74,6 +98,7 @@ class DTree:
         '''
         Display the rules
         '''
-        pass
+        for rule in self.rules:
+            print(rule)
 
    
