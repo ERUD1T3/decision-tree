@@ -244,7 +244,7 @@ class Learner:
 
         return max_attr
 
-    
+
     def are_same(self, data):
         '''
         Check if all the examples are the same final class
@@ -328,11 +328,11 @@ class Learner:
             # find the change in the target values
             if target_values[low] != target_values[high]:
                 # calculate the threshold
-                threshold = (attr_values[low] + attr_values[high]) / 2
+                threshold = (float(attr_values[low]) + float(attr_values[high])) / 2
                 candidates_thresholds.append(threshold)
 
-            low_index += 1
-            high_index += 1
+            low += 1
+            high += 1
 
         if self.debug:
             print('Candidate thresholds: ', candidates_thresholds)
@@ -377,16 +377,16 @@ class Learner:
         # get less than attribute
         decomp = attr.split('<')
         if len(decomp) == 2:
-            attr_lt = decomp[0]
+            attr_lt = decomp[0].strip()
             threshold = float(decomp[1])
-            return datum[self.order.index(attr_lt)] < threshold
+            return float(datum[self.order.index(attr_lt)]) < threshold
 
         # get greater than attribute
         decomp = attr.split('>')
         if len(decomp) == 2:
-            attr_gt = decomp[0]
+            attr_gt = decomp[0].strip()
             threshold = float(decomp[1])
-            return datum[self.order.index(attr_gt)] > threshold
+            return float(datum[self.order.index(attr_gt)]) > threshold
 
 
     def is_continuous(self, attr):
@@ -395,8 +395,6 @@ class Learner:
         '''
         return self.attr_values[attr][0] == 'continuous'
     
-
-
 
     def ID3_build(self, data, target_attr, attrs_to_test: list()):
         '''
@@ -424,39 +422,81 @@ class Learner:
         # get the best attribute to split the data
         best_attr = self.get_best_attribute(data, attrs_to_test)
 
-        # get the values of the attribute
-        values = self.attr_values[best_attr]
-
-        # remove the attribute from the list of attributes to test
-        attrs_to_test.remove(best_attr)
-
         # create the root node
         root = DNode(best_attr)
 
-        # create the children nodes
-        for v in values:
-            # getting the subset of the data
-            subset = [d for d in data if d[self.order.index(best_attr)] == v]
+        # check if the best attribute is discretized
+        if '>' in best_attr or '<' in best_attr:
+            pos_subset, neg_subset = [], []
+            for d in data:
+                if self.eval_continuous(d, best_attr):
+                    pos_subset.append(d)
+                else:
+                    neg_subset.append(d)
 
             if self.debug:
-                print('Subset: ', subset)
-
-            # if the subset is empty
-            if len(subset) == 0:
-                # set the child to the most common class
+                print('Positive subset: ', pos_subset)
+                print('Negative subset: ', neg_subset)
+            
+            # if empty postive subset
+            if len(pos_subset) == 0:
                 leaf = DNode(self.get_best_class(data))
-                leaf.parent = root
                 leaf.is_terminal = True
+                leaf.parent = root
                 leaf.class_distribution = self.get_class_distribution(data)
-                root.add_child(v, leaf)
+                root.add_child('T', leaf)
 
-            else:
-                # remove the attribute from the list of attributes
-                
-                child = self.ID3_build(subset, target_attr, attrs_to_test)
-                child.parent = root
+            else: # not empty positive subset
                 # create the child node
-                root.add_child(v, child)
+                child = self.ID3_build(pos_subset, target_attr, attrs_to_test)
+                child.parent = root
+                root.add_child('T', child)
+
+            # if empty negative subset
+            if len(neg_subset) == 0:
+                leaf = DNode(self.get_best_class(data))
+                leaf.is_terminal = True
+                leaf.parent = root
+                leaf.class_distribution = self.get_class_distribution(data)
+                root.add_child('F', leaf)
+            
+            else: # not empty negative subset
+                # create the child node
+                child = self.ID3_build(neg_subset, target_attr, attrs_to_test)
+                child.parent = root
+                root.add_child('F', child)
+
+        else: # not discretized
+            # get the values of the attribute
+            values = self.attr_values[best_attr]
+
+            # remove the attribute from the list of attributes to test
+            attrs_to_test.remove(best_attr)
+
+            # create the children nodes
+            for v in values:
+                # getting the subset of the data
+                subset = [d for d in data if d[self.order.index(best_attr)] == v]
+
+                if self.debug:
+                    print('Subset: ', subset)
+
+                # if the subset is empty
+                if len(subset) == 0:
+                    # set the child to the most common class
+                    leaf = DNode(self.get_best_class(data))
+                    leaf.parent = root
+                    leaf.is_terminal = True
+                    leaf.class_distribution = self.get_class_distribution(data)
+                    root.add_child(v, leaf)
+
+                else:
+                    # remove the attribute from the list of attributes
+                    
+                    child = self.ID3_build(subset, target_attr, attrs_to_test)
+                    child.parent = root
+                    # create the child node
+                    root.add_child(v, child)
 
         return root
 
