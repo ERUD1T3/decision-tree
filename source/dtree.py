@@ -33,8 +33,8 @@ class DTree:
         Initialize the tree object
         '''
 
-        self.attributes = attributes
-        self.order = order
+        # self.attributes = attributes
+        # self.order = order
         self.debug = debug
 
         self.root = None
@@ -60,8 +60,7 @@ class DTree:
                 print('\n', end='')
                 print(('|  ' * indent) + f'{attr} = {value}', end=' ')
                 self.preorder(child, indent + 1)
-
-    
+            
 
     def print_tree(self):
         '''
@@ -69,8 +68,8 @@ class DTree:
         '''
         # recusively print the tree starting at the root
         self.preorder(self.root, 0)
-
-
+        print('\n')
+        
     def print_rules(self):
         '''
         Display the rules

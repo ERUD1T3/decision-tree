@@ -63,10 +63,18 @@ def main():
     debugging = args.debug
 
 
-    
+    print('\nLearning the decision tree...\n')
     # run the program
     dtl = Learner(attributes_path, training_path, testing_path, debugging)
-    dtl.learn()
+    tree = dtl.learn()
+
+    print('\nTesting the tree on training data\n')
+    # testing tree on training data
+    dtl.test(tree, dtl.training)
+
+    print('\nTesting the tree on testing data\n')
+    # testing tree on test data
+    dtl.test(tree)
     
 if __name__ == '__main__':
     main()

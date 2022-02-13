@@ -7,7 +7,6 @@
 #   output a tree (or rule set)
 #############################################################
 
-from distutils.log import debug
 from math import log2
 from dtree import DNode, DTree
 
@@ -122,7 +121,6 @@ class Learner:
         
         return entropy
 
-    # TODO: test
     def gain(self, data, attribute: str):
         '''
         Calculate the information gain
@@ -193,7 +191,6 @@ class Learner:
 
         return best_gain, best_attr
 
-    # TODO: test
     def get_best_attribute(self, data, attrs_to_test: list()):
         '''
         Get the best attribute to split the data
@@ -303,7 +300,6 @@ class Learner:
 
         return counts
 
-    # TODO: Test this function
     def continuous_to_discrete(self, attr, data):
         '''
         Convert the continuous attribute to discrete
@@ -518,5 +514,70 @@ class Learner:
         
         return tree
 
-        
+    # TODO: test this function
+    def classify(self, tree, instance):
+        '''
+        Classify an instance
+        '''
+        # start at the root
+        node = tree.root
+
+        # traverse the tree until a leaf node is reached
+        while not node.is_terminal:
+            # get the attribute value for this node
+            attr = node.attribute
+
+            # if attr is continuous
+            if '<' in attr or '>' in attr:
+                if self.eval_continuous(instance, attr):
+                    node = node.children['T']
+                else:
+                    node = node.children['F']
             
+            # if attr is discrete
+            else: 
+                value = instance[self.order.index(attr)]
+
+                # follow the path to the child node
+                if value in node.children:
+                    node = node.children[value]
+                else:
+                    raise Exception(f'Invalid value {value} for attribute {attr}')
+
+        # node is now a leaf node
+        output_c = node.attribute
+        c_dist = node.class_distribution
+      
+        if self.debug:
+            print('Instance: ', instance)
+            print('Classification: ', output_c)
+            print('Class distribution: ', c_dist)
+
+        return output_c, c_dist
+
+    # TODO: test this function
+    def test(self, tree, testing=None):
+        '''test the decision tree'''
+        testing = self.testing if testing is None else testing
+
+        # get the number of correct classifications
+        correct = 0
+        for instance in testing:
+            output_c, c_dist = self.classify(tree, instance)
+
+            if self.debug:
+                # print output and label
+                print('Output: ', output_c, ' Label: ', instance[-1])
+            
+            # if the output is correct
+            if output_c == instance[-1]:
+                correct += 1
+
+        # get the accuracy
+        accuracy = 100 * correct / len(testing)
+
+        # print the accuracy
+        if self.debug:
+            print(f'Accuracy: {accuracy} %')
+
+        return accuracy
