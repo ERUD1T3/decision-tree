@@ -596,18 +596,18 @@ class Learner:
         # check if tree is rule based
         if len(tree.rules) > 0:
             for rule in tree.rules:
-                # ante, cons = rule.split('=>')
-                # ante = ante.replace(' ', '').split('^')
-                # cons = cons.strip().split(' ')
-                # # if self.debug:
-                # #     print(ante, cons)
+                ante, cons = rule.split('=>')
+                ante = ante.replace(' ', '').split('^')
+                cons = cons.strip().split(' ')
+                # if self.debug:
+                #     print(ante, cons)
 
-                # # check if antecedent is satisfied
-                # if self.is_satisfied(instance, ante):
-                #     print('Antecedent is satisfied')
-                #     print('Class: ', cons[0], 'distribution: ', cons[1])
-                #     return cons[0], cons[1]
-                return self.eval_rule(rule, instance)
+                # check if antecedent is satisfied
+                if self.is_satisfied(instance, ante):
+                    print('Antecedent is satisfied')
+                    print('Class: ', cons[0], 'distribution: ', cons[1])
+                    return cons[0], cons[1]
+                # return self.eval_rule(rule, instance)
                     
         # tree is not rule based
         else:
@@ -712,8 +712,8 @@ class Learner:
         ante = ante.replace(' ', '').split('^')
         cons = cons.strip().split(' ')
 
-        if self.debug:
-            print(ante, cons)
+        # if self.debug:
+        #     print(ante, cons)
 
         # check if antecedent is satisfied
         if self.is_satisfied(instance, ante):
@@ -753,8 +753,6 @@ class Learner:
 
         return accuracy
 
-
-    # TODO: test this function
     def prune_rule(self, rule, validation):
         '''prune a rule recursively'''
         # get the accuracy of the rule
@@ -803,7 +801,7 @@ class Learner:
         return rule, max_acc
 
 
-    # TODO: test this function
+    # TODO: test this function with large dataset
     def rule_post_pruning(self, tree, validation=None):
         '''
         Prune the tree based on rule post-pruning
@@ -831,7 +829,7 @@ class Learner:
             accuracies.append(acc)
 
         # sort the rules by accuracy descending
-        _, rules = (list(t) for t in zip(*sorted(zip(accuracies, rules), reverse=True)))
+        accuracies, rules = zip(*sorted(zip(accuracies, rules), reverse=True))
         
         if self.debug:
             print('Sorted rules and their accuracies: ')
