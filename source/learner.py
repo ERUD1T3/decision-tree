@@ -708,4 +708,8 @@ class Learner:
         '''
         Prune the tree based on rule post-pruning
         '''
-        pass
+        if validation is None:
+            validation = self.testing
+
+        # get the rules
+        
