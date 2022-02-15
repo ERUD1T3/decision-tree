@@ -169,6 +169,52 @@ class Learner:
         
         return prior - posterior
 
+    def split_information(self, data, attribute: str):
+        '''
+        Calculate the split information of certain attributes
+        '''
+        # getting the values of the attribute
+        posterior = 0.0
+
+        # case for continuous attribute
+        if '<' in attribute or '>' in attribute:
+            # getting the subset of the data
+            pos_subset, neg_subset = [], []
+            for d in data:
+                if self.eval_continuous(d, attribute):
+                    pos_subset.append(d)
+                else:
+                    neg_subset.append(d)
+
+            # getting the probabilities for the subsets
+            p_pos = len(pos_subset) / len(data)
+            p_neg = len(neg_subset) / len(data)
+
+            # calculating the entropy for the subsets
+            e_pos = self.entropy(pos_subset)
+            e_neg = self.entropy(neg_subset)
+
+            # calculating the posterior entropy
+            posterior = p_pos * e_pos + p_neg * e_neg
+
+        # case of discrete data
+        else:
+            # getting the values of the attribute
+            values = self.attr_values[attribute]
+            attr_index = self.order.index(attribute)
+
+            # calculating the entropys over the subset
+            for v in values:
+                # getting the subset of the data
+                subset = [d for d in data if d[attr_index] == v]
+                # calculating the entropy
+                p = len(subset) / len(data)
+                e = self.entropy(subset)
+                # calculating the gain
+                posterior += p * e
+        
+        return - posterior
+
     def get_best_discretized_attribute(self, data, d_attr_to_test):
         '''
         Get best discretize attribute
@@ -541,8 +587,8 @@ class Learner:
                 ante, cons = rule.split('=>')
                 ante = ante.replace(' ', '').split('^')
                 cons = cons.strip().split(' ')
-                if self.debug:
-                    print(ante, cons)
+                # if self.debug:
+                #     print(ante, cons)
 
                 # check if antecedent is satisfied
                 if self.is_satisfied(instance, ante):
@@ -645,8 +691,8 @@ class Learner:
             for child in node.children.values():
                 self.tree_to_rules_rec(child, rules)
 
-
-    def rule_post_pruning(self, tree):
+    # TODO: implement this
+    def rule_post_pruning(self, tree, validation=None):
         '''
         Prune the tree based on rule post-pruning
         '''
