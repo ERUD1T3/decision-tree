@@ -19,12 +19,15 @@ class DNode:
         self.children = {} # keys are attribute values
         self.class_distribution = [] # keys are class values
         self.is_terminal = False
+        # self.value = None
 
     def add_child(self, value, child):
         '''
         Add a child node
         '''
+        # child.value = value
         self.children[value] = child
+        
 
     def get_class_dist_str(self) -> str:
         '''
