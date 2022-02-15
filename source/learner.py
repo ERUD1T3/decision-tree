@@ -596,17 +596,18 @@ class Learner:
         # check if tree is rule based
         if len(tree.rules) > 0:
             for rule in tree.rules:
-                ante, cons = rule.split('=>')
-                ante = ante.replace(' ', '').split('^')
-                cons = cons.strip().split(' ')
-                # if self.debug:
-                #     print(ante, cons)
+                # ante, cons = rule.split('=>')
+                # ante = ante.replace(' ', '').split('^')
+                # cons = cons.strip().split(' ')
+                # # if self.debug:
+                # #     print(ante, cons)
 
-                # check if antecedent is satisfied
-                if self.is_satisfied(instance, ante):
-                    print('Antecedent is satisfied')
-                    print('Class: ', cons[0], 'distribution: ', cons[1])
-                    return cons[0], cons[1]
+                # # check if antecedent is satisfied
+                # if self.is_satisfied(instance, ante):
+                #     print('Antecedent is satisfied')
+                #     print('Class: ', cons[0], 'distribution: ', cons[1])
+                #     return cons[0], cons[1]
+                return self.eval_rule(rule, instance)
                     
         # tree is not rule based
         else:
@@ -703,7 +704,106 @@ class Learner:
             for child in node.children.values():
                 self.tree_to_rules_rec(child, rules)
 
-    # TODO: implement this
+    def eval_rule(self, rule, instance):
+        '''
+        Evaluate a rule
+        '''
+        ante, cons = rule.split('=>')
+        ante = ante.replace(' ', '').split('^')
+        cons = cons.strip().split(' ')
+
+        if self.debug:
+            print(ante, cons)
+
+        # check if antecedent is satisfied
+        if self.is_satisfied(instance, ante):
+            print('Antecedent is satisfied')
+            print('Class: ', cons[0], 'distribution: ', cons[1])
+            return cons[0], cons[1]
+        
+        return None, None
+
+    def rule_accuracy(self, rule, testing=None):
+        '''
+        Calculate the accuracy of a rule
+        '''
+        testing = self.testing if testing is None else testing
+
+        # get the number of correct classifications
+        correct = 0
+        for instance in testing:
+            output_c, c_dist = self.eval_rule(rule, instance)
+            if output_c is None:
+                continue
+
+            if self.debug:
+                # print output and label
+                print('Output: ', output_c, ' Label: ', instance[-1])
+            
+            # if the output is correct
+            if output_c == instance[-1]:
+                correct += 1
+
+        # get the accuracy
+        accuracy = 100 * correct / len(testing)
+
+        # print the accuracy
+        if self.debug:
+            print(f'Accuracy: {accuracy} %')
+
+        return accuracy
+
+
+    # TODO: test this function
+    def prune_rule(self, rule, validation):
+        '''prune a rule recursively'''
+        # get the accuracy of the rule
+        accuracy = self.rule_accuracy(rule, validation)
+
+        # if the rule is already accurate
+        if accuracy == 100:
+            return rule, accuracy
+
+        if len(rule) == 0:
+            return None, 0.0
+
+        # get the prior accuracy
+        max_acc = self.rule_accuracy(rule, validation)
+
+        # get all antecedents
+        ante, _ = rule.split('=>')
+        ante = ante.replace(' ', '').split('^')
+
+        # get all possible antecedents
+        # possible_antecedents = []
+    
+        
+        for a in reversed(ante): 
+            copy = rule               
+            # remove the antecendent from the rule
+            copy.replace(a, '')
+            copy.strip(' ^') # cleanup the rule after pruning
+
+            # get the post accuracy
+            acc = self.rule_accuracy(copy, validation)
+
+            if acc > max_acc:
+                max_acc = acc
+                # explore combinations of antecedents
+                r, a = self.prune_rule(copy, validation)
+
+                if a > max_acc:
+                    max_acc = a
+                    rule = r
+                else:
+                    rule = copy
+
+                break
+            
+        return rule, max_acc
+
+
+    # TODO: test this function
     def rule_post_pruning(self, tree, validation=None):
         '''
         Prune the tree based on rule post-pruning
@@ -711,5 +811,35 @@ class Learner:
         if validation is None:
             validation = self.testing
 
+        accuracies = [] # list of accuracies
         # get the rules
+        if tree.rules is None:
+            self.tree_to_rules(tree)
         
+        rules = tree.rules
+        # for each rule
+        for r in range(len(rules)):
+            rule = rules[r]
+            best, acc = self.prune_rule(rule, validation)
+            
+            if self.debug:
+                print('Rule: ', rule)
+                print('Accuracy: ', acc)
+                print('Best: ', best)
+        
+            rules[r] = best
+            accuracies.append(acc)
+
+        # sort the rules by accuracy descending
+        _, rules = (list(t) for t in zip(*sorted(zip(accuracies, rules), reverse=True)))
+        
+        if self.debug:
+            print('Sorted rules and their accuracies: ')
+            # print the rules and corresponding accuracies
+            for r in range(len(rules)):
+                print(f'{rules[r]}, {accuracies[r]}')
+
+        # get the best rules on the tree
+        tree.rules = rules
+
+        return tree

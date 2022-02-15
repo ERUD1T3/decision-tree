@@ -84,6 +84,13 @@ def main():
     # testing tree on test data
     dtl.test(tree)
 
+    print('\n Pruning the tree...\n')
+    # prune the tree
+    dtl.rule_post_pruning(tree, dtl.testing)
+
+    print('\nTesting the tree post pruning\n')
+    # testing tree on test data
+    dtl.test(tree)
 
 
     
