@@ -514,7 +514,22 @@ class Learner:
         
         return tree
 
-    # TODO: update to support rules
+    def is_satisfied(self, instance, antecent):
+        '''
+        check if the antecent is satisfied
+        '''
+        for a in antecent:
+            attr, value = a.split('=')
+            if '<' in attr or '>' in attr:
+                value = value == 'T' # if the value is true
+                if self.eval_continuous(instance, attr) != value:
+                    return False
+            else:
+                if instance[self.order.index(attr)] != value:
+                    return False
+
+        return True
+    
     def classify(self, tree, instance):
         '''
         Classify an instance
@@ -522,7 +537,19 @@ class Learner:
 
         # check if tree is rule based
         if len(tree.rules) > 0:
-            pass
+            for rule in tree.rules:
+                ante, cons = rule.split('=>')
+                ante = ante.replace(' ', '').split('^')
+                cons = cons.strip().split(' ')
+                if self.debug:
+                    print(ante, cons)
+
+                # check if antecedent is satisfied
+                if self.is_satisfied(instance, ante):
+                    print('Antecedent is satisfied')
+                    print('Class: ', cons[0], 'distribution: ', cons[1])
+                    return cons[0], cons[1]
+                    
         # tree is not rule based
         else:
             # start at the root
@@ -617,3 +644,10 @@ class Learner:
             # get the children rules
             for child in node.children.values():
                 self.tree_to_rules_rec(child, rules)
+
+
+    def rule_post_pruning(self, tree):
+        '''
+        Prune the tree based on rule post-pruning
+        '''
+        pass

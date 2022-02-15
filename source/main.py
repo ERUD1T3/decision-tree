@@ -80,6 +80,10 @@ def main():
     # print the rules
     dtl.tree_to_rules(tree)    
 
+    print('\nTesting the rules on testing data\n')
+    # testing tree on test data
+    dtl.test(tree)
+
 
 
     
