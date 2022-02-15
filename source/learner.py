@@ -514,46 +514,52 @@ class Learner:
         
         return tree
 
-
+    # TODO: update to support rules
     def classify(self, tree, instance):
         '''
         Classify an instance
         '''
-        # start at the root
-        node = tree.root
 
-        # traverse the tree until a leaf node is reached
-        while not node.is_terminal:
-            # get the attribute value for this node
-            attr = node.attribute
+        # check if tree is rule based
+        if len(tree.rules) > 0:
+            pass
+        # tree is not rule based
+        else:
+            # start at the root
+            node = tree.root
 
-            # if attr is continuous
-            if '<' in attr or '>' in attr:
-                if self.eval_continuous(instance, attr):
-                    node = node.children['T']
-                else:
-                    node = node.children['F']
-            
-            # if attr is discrete
-            else: 
-                value = instance[self.order.index(attr)]
+            # traverse the tree until a leaf node is reached
+            while not node.is_terminal:
+                # get the attribute value for this node
+                attr = node.attribute
 
-                # follow the path to the child node
-                if value in node.children:
-                    node = node.children[value]
-                else:
-                    raise Exception(f'Invalid value {value} for attribute {attr}')
+                # if attr is continuous
+                if '<' in attr or '>' in attr:
+                    if self.eval_continuous(instance, attr):
+                        node = node.children['T']
+                    else:
+                        node = node.children['F']
+                
+                # if attr is discrete
+                else: 
+                    value = instance[self.order.index(attr)]
 
-        # node is now a leaf node
-        output_c = node.attribute
-        c_dist = node.class_distribution
-      
-        if self.debug:
-            print('Instance: ', instance)
-            print('Classification: ', output_c)
-            print('Class distribution: ', c_dist)
+                    # follow the path to the child node
+                    if value in node.children:
+                        node = node.children[value]
+                    else:
+                        raise Exception(f'Invalid value {value} for attribute {attr}')
 
-        return output_c, c_dist
+            # node is now a leaf node
+            output_c = node.attribute
+            c_dist = node.class_distribution
+        
+            if self.debug:
+                print('Instance: ', instance)
+                print('Classification: ', output_c)
+                print('Class distribution: ', c_dist)
+
+            return output_c, c_dist
 
 
     def test(self, tree, testing=None):
@@ -582,7 +588,6 @@ class Learner:
 
         return accuracy
 
-    # TODO: test
     def tree_to_rules(self, tree):
         '''
         Convert the decision tree to a set of rules

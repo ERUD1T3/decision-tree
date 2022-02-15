@@ -19,13 +19,13 @@ class DNode:
         self.children = {} # keys are attribute values
         self.class_distribution = [] # keys are class values
         self.is_terminal = False
-        # self.value = None
+        self.value = None
 
     def add_child(self, value, child):
         '''
         Add a child node
         '''
-        # child.value = value
+        child.value = value
         self.children[value] = child
         
 
@@ -40,7 +40,6 @@ class DNode:
         return '(' + ','.join(c_dist_str) + ')'
 
 
-    # TODO: test this function
     def get_rule(self):
         '''
         Get the rule for the node
@@ -48,13 +47,15 @@ class DNode:
         rule = ''
         if self.parent:
             rule += self.parent.get_rule()
+
         if self.attribute:
-            if self.is_terminal:
-                rule += f' => {self.attribute} {self.get_class_dist_str()}'
-            elif self.parent is None:
-                rule += f'{self.attribute} = {self.value}'
-            else:
-                rule += f' ^ {self.attribute} = {self.value}'
+            if self.parent:
+                rule += f'{self.parent.attribute} = {self.value}'
+                if self.is_terminal:
+                    rule += f' => {self.attribute} {self.get_class_dist_str()}'
+                else:
+                    rule += ' ^ '
+                
         return rule
 
 class DTree:
