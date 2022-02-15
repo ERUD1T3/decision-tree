@@ -8,7 +8,7 @@
 #############################################################
 
 
-from math import log2
+from math import log2 as lg
 from dtree import DNode, DTree
 
 def log2(x):
@@ -16,7 +16,7 @@ def log2(x):
     if x == 0:
         return 0
     else:
-        return log2(x)
+        return lg(x)
 class Learner:
 
     def __init__(self, attr_path, training_path, testing_path, debug=False):
