@@ -7,9 +7,16 @@
 #   output a tree (or rule set)
 #############################################################
 
+
 from math import log2
 from dtree import DNode, DTree
 
+def log2(x):
+    '''log2 of x with support of 0'''
+    if x == 0:
+        return 0
+    else:
+        return log2(x)
 class Learner:
 
     def __init__(self, attr_path, training_path, testing_path, debug=False):
@@ -114,9 +121,7 @@ class Learner:
                 print('Class: ', c, ' prob: ', c_dist[c] / n)
 
             p = c_dist[c] / n
-
-            if p != 0:
-                entropy += -p * log2(p)
+            entropy += -p * log2(p)
             # else entropy += 0 but we don't need to do that
         
         return entropy
@@ -174,7 +179,7 @@ class Learner:
         Calculate the split information of certain attributes
         '''
         # getting the values of the attribute
-        posterior = 0.0
+        split_info = 0.0
 
         # case for continuous attribute
         if '<' in attribute or '>' in attribute:
@@ -189,13 +194,10 @@ class Learner:
             # getting the probabilities for the subsets
             p_pos = len(pos_subset) / len(data)
             p_neg = len(neg_subset) / len(data)
-
-            # calculating the entropy for the subsets
-            e_pos = self.entropy(pos_subset)
-            e_neg = self.entropy(neg_subset)
-
-            # calculating the posterior entropy
-            posterior = p_pos * e_pos + p_neg * e_neg
+            
+    
+            # calculating the split information
+            split_info = - p_pos * log2(p_pos) - p_neg * log2(p_neg)
 
         # case of discrete data
         else:
@@ -209,11 +211,21 @@ class Learner:
                 subset = [d for d in data if d[attr_index] == v]
                 # calculating the entropy
                 p = len(subset) / len(data)
-                e = self.entropy(subset)
                 # calculating the gain
-                posterior += p * e
+                split_info -= p * log2(p)
         
-        return - posterior
+        return split_info
+
+    def gain_ratio(self, data, attribute: str):
+        '''
+        Calculate the gain ratio
+        '''
+        # getting the information gain
+        gain = self.gain(data, attribute)
+        # getting the split information
+        split_info = self.split_information(data, attribute)
+
+        return gain / split_info
 
     def get_best_discretized_attribute(self, data, d_attr_to_test):
         '''
