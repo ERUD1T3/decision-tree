@@ -72,25 +72,25 @@ def main():
     # testing tree on training data
     dtl.test(tree, dtl.training)
 
-    print('\nTesting the tree on testing data\n')
-    # testing tree on test data
-    dtl.test(tree)
+    # print('\nTesting the tree on testing data\n')
+    # # testing tree on test data
+    # dtl.test(tree)
 
-    print('\nPrinting the decision tree rules\n')
-    # print the rules
-    dtl.tree_to_rules(tree)    
+    # print('\nPrinting the decision tree rules\n')
+    # # print the rules
+    # dtl.tree_to_rules(tree)    
 
-    print('\nTesting the rules on testing data\n')
-    # testing tree on test data
-    dtl.test(tree)
+    # print('\nTesting the rules on testing data\n')
+    # # testing tree on test data
+    # dtl.test(tree)
 
-    print('\n Pruning the tree...\n')
-    # prune the tree
-    dtl.rule_post_pruning(tree, dtl.testing)
+    # print('\n Pruning the tree...\n')
+    # # prune the tree
+    # dtl.rule_post_pruning(tree, dtl.testing)
 
-    print('\nTesting the tree post pruning\n')
-    # testing tree on test data
-    dtl.test(tree)
+    # print('\nTesting the tree post pruning\n')
+    # # testing tree on test data
+    # dtl.test(tree)
 
 
     
