@@ -2,3 +2,8 @@
 python source/main.py -a data/tennis/tennis-attr.txt -d data/tennis/tennis-train.txt -t data/tennis/tennis-test.txt --debug
 python source/main.py -a data/iris/iris-attr.txt -d data/iris/iris-train.txt -t data/iris/iris-test.txt --debug
 python source/main.py -a data/bool/bool-attr.txt -d data/bool/bool-train.txt -t data/bool/bool-test.txt --debug
+
+
+# to run the experiments
+1. Test on Tennis data
+python experiments/testTennis.py

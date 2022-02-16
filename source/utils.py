@@ -8,7 +8,7 @@
 
 
 from math import log2 as lg
-
+import random
 
 def log2(x):
     '''log2 of x with support of 0'''

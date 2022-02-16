@@ -32,11 +32,13 @@ def main():
 
     print('\nTesting the tree on training data\n')
     # testing tree on training data
-    dtl.test(tree, dtl.training)
+    training_acc = dtl.test(tree, dtl.training)
+    print('\nTraining accuracy: ', training_acc)
 
     print('\nTesting the tree on testing data\n')
     # testing tree on test data
-    dtl.test(tree, dtl.testing)
+    testing_acc = dtl.test(tree, dtl.testing)
+    print('\nTesting accuracy: ', testing_acc)
 
     print('\nPrinting the decision tree rules\n')
     # print the rules
@@ -45,14 +47,17 @@ def main():
     print('\n Pruning the tree...\n')
     # prune the tree
     dtl.rule_post_pruning(tree, dtl.testing)
+    tree.print_rules()
 
     print('\nTesting the rules on training data\n')
     # testing tree on test data
-    dtl.test(tree, dtl.training)
+    training_acc = dtl.test(tree, dtl.training)
+    print('\nTraining accuracy: ', training_acc)
 
     print('\nTesting the rules on testing data\n')
     # testing tree on test data
-    dtl.test(tree, dtl.testing)
+    testing_acc = dtl.test(tree, dtl.testing)
+    print('\nTesting accuracy: ', testing_acc)
 
 
     

@@ -32,23 +32,28 @@ def main():
 
     print('\nTesting the tree on training data\n')
     # testing tree on training data
-    dtl.test(tree, dtl.training)
+    training_acc = dtl.test(tree, dtl.training)
+    print('\nTraining accuracy: ', training_acc)
 
     print('\nTesting the tree on testing data\n')
     # testing tree on test data
-    dtl.test(tree, dtl.testing)
+    testing_acc = dtl.test(tree, dtl.testing)
+    print('\nTesting accuracy: ', testing_acc)
 
     print('\nPrinting the decision tree rules\n')
     # print the rules
-    dtl.tree_to_rules(tree)    
+    dtl.tree_to_rules(tree)  
+    tree.print_rules()  
 
     print('\nTesting the rules on Training data\n')
     # testing tree on test data
-    dtl.test(tree, dtl.training)
+    training_acc = dtl.test(tree, dtl.training)
+    print('\nTraining accuracy: ', training_acc)
 
     print('\nTesting the rules on Testing data\n')
     # testing tree on test data
-    dtl.test(tree, dtl.testing)
+    testing_acc = dtl.test(tree, dtl.testing)
+    print('\nTesting accuracy: ', testing_acc)
 
 
     
