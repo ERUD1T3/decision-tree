@@ -11,14 +11,14 @@
 
 
 # imports
-from source.learner import Learner
+from learner import Learner
 
 def main():
     '''main of the program'''
 
-    training_path = '../data/tennis/tennis-attr.txt'
-    testing_path = '../data/tennis/tennis-test.txt'
-    attributes_path = '../data/tennis/tennis-attr.txt'
+    training_path = '..\\data\\tennis\\tennis-attr.txt'
+    testing_path = '..\\data\\tennis\\tennis-test.txt'
+    attributes_path = '..\\data\\tennis\\tennis-attr.txt'
     debugging = False
 
 

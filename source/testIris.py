@@ -2,19 +2,16 @@
 #   Dev: Josias Moukpe
 #   Class: Machine Learning
 #   Date: 2/7/2022
-#   file: testTennis.py
-#   Description: corrupt the class labels of
-#   training examples from 0% to 20% (2% in-
-#   crement) by changing from the correct class
-#   to another class; output the accuracy on the
-#   uncorrupted test set with and without rule
-#   post-pruning.
+#   file: testIris.py
+#   Description: print the tree, tree accuracy on the
+#   training and test sets, the rules after post-
+#   pruning, rule accuracy on the training and
+#   test sets
 #############################################################
 
 
 # imports
-from source.learner import Learner
-from source.utils import corrupt_data
+from learner import Learner
 
 def main():
     '''main of the program'''
@@ -35,23 +32,32 @@ def main():
 
     print('\nTesting the tree on training data\n')
     # testing tree on training data
-    dtl.test(tree, dtl.training)
+    training_acc = dtl.test(tree, dtl.training)
+    print('\nTraining accuracy: ', training_acc)
 
     print('\nTesting the tree on testing data\n')
     # testing tree on test data
-    dtl.test(tree, dtl.testing)
+    testing_acc = dtl.test(tree, dtl.testing)
+    print('\nTesting accuracy: ', testing_acc)
 
     print('\nPrinting the decision tree rules\n')
     # print the rules
     dtl.tree_to_rules(tree)    
 
-    print('\nTesting the rules on Training data\n')
-    # testing tree on test data
-    dtl.test(tree, dtl.training)
+    print('\n Pruning the tree...\n')
+    # prune the tree
+    dtl.rule_post_pruning(tree, dtl.testing)
+    tree.print_rules()
 
-    print('\nTesting the rules on Testing data\n')
+    print('\nTesting the rules on training data\n')
     # testing tree on test data
-    dtl.test(tree, dtl.testing)
+    training_acc = dtl.test(tree, dtl.training)
+    print('\nTraining accuracy: ', training_acc)
+
+    print('\nTesting the rules on testing data\n')
+    # testing tree on test data
+    testing_acc = dtl.test(tree, dtl.testing)
+    print('\nTesting accuracy: ', testing_acc)
 
 
     
