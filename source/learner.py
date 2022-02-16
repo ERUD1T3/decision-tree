@@ -3,20 +3,14 @@
 #   Class: Machine Learning
 #   Date: 2/7/2022
 #   file: learner.py
-#   Description: : input training examples/instances, 
+#   Description: input training examples/instances, 
 #   output a tree (or rule set)
 #############################################################
 
-
-from math import log2 as lg
+from utils import log2
 from dtree import DNode, DTree
 
-def log2(x):
-    '''log2 of x with support of 0'''
-    if x == 0:
-        return 0
-    else:
-        return lg(x)
+
 class Learner:
 
     def __init__(self, attr_path, training_path, testing_path, debug=False):
