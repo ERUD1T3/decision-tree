@@ -23,36 +23,55 @@ def main():
     testing_path = '../data/iris/iris-test.txt'
     attributes_path = '../data/iris/iris-attr.txt'
     debugging = False
+    validation = True
 
+    # create learner
+    dtl = Learner(
+        attributes_path, 
+        training_path, 
+        testing_path, 
+        validation, 
+        debugging
+    )
 
-    print('\nLearning the decision tree...\n')
-    # run the program
-    dtl = Learner(attributes_path, training_path, testing_path, debugging)
-    tree = dtl.learn()
+    # start of the experiment 
+    for p in range(.0, .2, .02):
+        # corrupt the data'
+        print('\nCorrupting the data by changing from the correct class to another class...')
+        dtl.training = corrupt_data(dtl.training, p)
 
-    print('\nPrinting the decision tree...\n')
-    tree.print_tree()
+        print('\nLearning the decision tree...\n')
+        # run the program
+        tree = dtl.learn()
 
-    print('\nTesting the tree on training data\n')
-    # testing tree on training data
-    dtl.test(tree, dtl.training)
+        # print('\nTesting the tree on training data\n')
+        # # testing tree on training data
+        # training_acc = dtl.test(tree, dtl.training)
+        # print('\nTraining accuracy: ', training_acc)
 
-    print('\nTesting the tree on testing data\n')
-    # testing tree on test data
-    dtl.test(tree, dtl.testing)
+        print('\nTesting the tree on uncorrupted testing data\n')
+        # testing tree on test data
+        testing_acc = dtl.test(tree, dtl.testing)
+        print('\nTesting accuracy: ', testing_acc)
 
-    print('\nPrinting the decision tree rules\n')
-    # print the rules
-    dtl.tree_to_rules(tree)    
+        # print('\nPrinting the decision tree rules\n')
+        # # print the rules
+        # dtl.tree_to_rules(tree)    
 
-    print('\nTesting the rules on Training data\n')
-    # testing tree on test data
-    dtl.test(tree, dtl.training)
+        print('\n Pruning the tree...\n')
+        # prune the tree
+        dtl.rule_post_pruning(tree, dtl.validation)
+        tree.print_rules()
 
-    print('\nTesting the rules on Testing data\n')
-    # testing tree on test data
-    dtl.test(tree, dtl.testing)
+        # print('\nTesting the rules on training data\n')
+        # # testing tree on test data
+        # training_acc = dtl.test(tree, dtl.training)
+        # print('\nTraining accuracy: ', training_acc)
 
+        print('\nTesting the rules on uncorrupted testing data\n')
+        # testing tree on test data
+        testing_acc = dtl.test(tree, dtl.testing)
+        print('\nTesting accuracy: ', testing_acc)
 
     
 if __name__ == '__main__':

@@ -13,7 +13,7 @@ from dtree import DNode, DTree
 
 class Learner:
 
-    def __init__(self, attr_path, training_path, testing_path, debug=False):
+    def __init__(self, attr_path, training_path, testing_path, validation=False,debug=False):
         '''
         Initialize the learner object
         '''
@@ -21,15 +21,26 @@ class Learner:
         self.training_path = training_path
         self.testing_path =  testing_path
         self.debug = debug
+
         # attributes and their order
         self.attr_values, self.order = self.read_attributes(self.attr_path)
-        self.training = self.read_data(self.training_path)
+        
         self.testing = self.read_data(self.testing_path)
         self.n_examples = len(self.training)
 
+        # if validation is true, then we will use the validation set
+        if validation:
+            # extract 18% of training set for validation
+            cutoff = int(self.n_examples * 0.18)
+            self.validation = self.training[:cutoff]
+            self.training = self.training[cutoff:]
+            self.n_examples = len(self.training)
+        else:
+            # no validation set
+            self.training = self.read_data(self.training_path)
         # tracking attributes generated from continuous data
-        self.tmp_attr_values = {}
-        self.tmp_order = []
+        # self.tmp_attr_values = {}
+        # self.tmp_order = []
 
 
 
