@@ -19,9 +19,9 @@ from utils import corrupt_data
 def main():
     '''main of the program'''
 
-    training_path = '../data/iris/iris-attr.txt'
-    testing_path = '../data/iris/iris-test.txt'
-    attributes_path = '../data/iris/iris-attr.txt'
+    training_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
+    testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-test.txt'
+    attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
     debugging = False
     validation = True
 
@@ -35,10 +35,10 @@ def main():
     )
 
     # start of the experiment 
-    for p in range(.0, .2, .02):
+    for p in range(0, 20, 2):
         # corrupt the data'
         print('\nCorrupting the data by changing from the correct class to another class...')
-        dtl.training = corrupt_data(dtl.training, p)
+        dtl.training = corrupt_data(dtl.training, dtl.get_classes(), p / 100.)
 
         print('\nLearning the decision tree...\n')
         # run the program

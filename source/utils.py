@@ -17,45 +17,31 @@ def log2(x):
     else:
         return lg(x)
 
-# TODO: fix this function
-def corrupt_data(data, percent):
+# TODO: test this function
+def corrupt_data(data, classes, percent):
     '''corrupt the class labels of training examples from 0% to 20% (2% in-
     crement) by changing from the correct class to another class; output the
     accuracy on the uncorrupted test set with and without rule post-pruning.'''
 
+    # get the number of training examples
+    num_examples = len(data)
+    # get the number of classes to corrupt
+    num_examples_to_corrupt = int(percent * num_examples)
+    # get the elements to corrupt
+    corrupt_elements = random.sample(range(num_examples), num_examples_to_corrupt)
+
     # corrupt the data
-    for i in range(len(data)):
+    for e in corrupt_elements:
         # get the class label
-        label = data[i][-1]
-        # get the index of the class label
-        index = data[i].index(label)
-        # get the number of classes
-        num_classes = len(data[i]) - 1
-        # get the number of classes to corrupt
-        num_classes_corrupt = int(num_classes * percent)
-        # get the classes to corrupt
-        classes_corrupt = []
-        for j in range(num_classes_corrupt):
-            # get a random class
-            class_corrupt = random.randint(0, num_classes - 1)
-            # check if the class is already in the list
-            while class_corrupt in classes_corrupt:
-                # get a random class
-                class_corrupt = random.randint(0, num_classes - 1)
-            # add the class to the list
-            classes_corrupt.append(class_corrupt)
-        # corrupt the class labels
-        for j in classes_corrupt:
-            # get a random class
-            class_corrupt = random.randint(0, num_classes - 1)
-            # check if the class is already in the list
-            while class_corrupt in classes_corrupt:
-                # get a random class
-                class_corrupt = random.randint(0, num_classes - 1)
-            # add the class to the list
-            classes_corrupt.append(class_corrupt)
-        # corrupt the class labels
-        for j in classes_corrupt:
-            # corrupt the class label
-            data[i][j] = random.choice(data[i])
+        correct_label = data[e][-1]
+        
+        random_class = random.choice(classes)
+
+        # while the random class is the same as the correct class
+        while random_class == correct_label:
+            random_class = random.choice(classes)
+    
+        # change the class label
+        data[e][-1] = random_class
+        
     return data
