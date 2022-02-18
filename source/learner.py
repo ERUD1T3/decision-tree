@@ -33,7 +33,7 @@ class Learner:
         # if validation is true, then we will use the validation set
         if validation:
             # extract 18% of training set for validation
-            cutoff = int(self.n_examples * 0.18)
+            cutoff = int(self.n_examples * 0.30)
             self.validation = self.training[:cutoff]
             self.training = self.training[cutoff:]
             self.n_examples = len(self.training)
@@ -613,8 +613,9 @@ class Learner:
 
                 # check if antecedent is satisfied
                 if self.is_satisfied(instance, ante):
-                    print('Antecedent is satisfied')
-                    print('Class: ', cons[0], 'distribution: ', cons[1])
+                    if self.debug:
+                        print('Antecedent is satisfied')
+                        print('Class: ', cons[0], 'distribution: ', cons[1])
                     return cons[0], cons[1]
                 # return self.eval_rule(rule, instance)
                     
@@ -726,8 +727,9 @@ class Learner:
 
         # check if antecedent is satisfied
         if self.is_satisfied(instance, ante):
-            print('Antecedent is satisfied')
-            print('Class: ', cons[0], 'distribution: ', cons[1])
+            if self.debug:
+                print('Antecedent is satisfied')
+                print('Class: ', cons[0], 'distribution: ', cons[1])
             return cons[0], cons[1]
         
         return None, None
@@ -817,6 +819,9 @@ class Learner:
         '''
         if validation is None:
             validation = self.testing
+
+        if self.debug:
+            print('validation: ', validation)
 
         accuracies = [] # list of accuracies
         # get the rules

@@ -19,9 +19,9 @@ from utils import corrupt_data
 def main():
     '''main of the program'''
 
-    training_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
-    testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-test.txt'
-    attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
+    training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-train.txt'
+    testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-test.txt'
+    attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-attr.txt'
     debugging = False
     validation = True
 
@@ -30,8 +30,8 @@ def main():
         attributes_path, 
         training_path, 
         testing_path, 
-        validation, 
-        debugging
+        debugging,
+        validation
     )
 
     # start of the experiment 
@@ -39,6 +39,8 @@ def main():
         # corrupt the data'
         print('\nCorrupting the data by changing from the correct class to another class...')
         dtl.training = corrupt_data(dtl.training, dtl.get_classes(), p / 100.)
+        # print('\nCorrupted data:')
+        # print(dtl.training)
 
         print('\nLearning the decision tree...\n')
         # run the program
@@ -54,9 +56,9 @@ def main():
         testing_acc = dtl.test(tree, dtl.testing)
         print('\nTesting accuracy: ', testing_acc)
 
-        # print('\nPrinting the decision tree rules\n')
-        # # print the rules
-        # dtl.tree_to_rules(tree)    
+        print('\nPrinting the decision tree rules\n')
+        # print the rules
+        dtl.tree_to_rules(tree)    
 
         print('\n Pruning the tree...\n')
         # prune the tree
