@@ -15,10 +15,9 @@ from learner import Learner
 
 def main():
     '''main of the program'''
-
-    training_path = '..\\data\\tennis\\tennis-attr.txt'
-    testing_path = '..\\data\\tennis\\tennis-test.txt'
-    attributes_path = '..\\data\\tennis\\tennis-attr.txt'
+    training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-train.txt'
+    testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-test.txt'
+    attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-attr.txt'
     debugging = False
 
 

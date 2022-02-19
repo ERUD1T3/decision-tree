@@ -16,9 +16,9 @@ from learner import Learner
 def main():
     '''main of the program'''
 
-    training_path = '../data/iris/iris-attr.txt'
-    testing_path = '../data/iris/iris-test.txt'
-    attributes_path = '../data/iris/iris-attr.txt'
+    training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-train.txt'
+    testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-test.txt'
+    attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-attr.txt'
     debugging = False
 
 

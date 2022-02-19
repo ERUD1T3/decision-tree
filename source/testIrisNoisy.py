@@ -19,9 +19,9 @@ from utils import corrupt_data
 def main():
     '''main of the program'''
 
-    training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\bool\\bool-train.txt'
-    testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\bool\\bool-test.txt'
-    attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\bool\\bool-attr.txt'
+    training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-train.txt'
+    testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-test.txt'
+    attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-attr.txt'
     debugging = False
     validation = True
 
