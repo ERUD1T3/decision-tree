@@ -32,7 +32,7 @@ class Learner:
 
         # if validation is true, then we will use the validation set
         if validation:
-            # extract 18% of training set for validation
+            # extract 30% of training set for validation
             cutoff = int(self.n_examples * 0.30)
             self.validation = self.training[:cutoff]
             self.training = self.training[cutoff:]
@@ -799,15 +799,15 @@ class Learner:
             if acc > max_acc:
                 max_acc = acc
                 # explore combinations of antecedents
-                r, a = self.prune_rule(copy, validation)
+                # r, a = self.prune_rule(copy, validation)
 
-                if a > max_acc:
-                    max_acc = a
-                    rule = r
-                else:
-                    rule = copy
+                # if a > max_acc:
+                #     max_acc = a
+                #     rule = r
+                # else:
+                rule = copy
 
-                break
+                # break
             
         return rule, max_acc
 

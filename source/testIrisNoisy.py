@@ -22,6 +22,9 @@ def main():
     training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-train.txt'
     testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-test.txt'
     attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-attr.txt'
+    # training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-train.txt'
+    # testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-test.txt'
+    # attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-attr.txt'
     debugging = False
     validation = True
 
@@ -75,6 +78,8 @@ def main():
         # testing tree on test data
         testing_acc = dtl.test(tree, dtl.testing)
         print('\nTesting accuracy: ', testing_acc)
+
+        # break
 
     
 if __name__ == '__main__':
