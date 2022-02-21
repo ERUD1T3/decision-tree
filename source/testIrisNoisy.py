@@ -47,6 +47,7 @@ def main():
         print('////////////////////////////////////////////////////////////')
         # corrupt the data'
         print('\nCorrupting the data by changing from the correct class to another class...')
+        print('\nPercentage of corruption: {}%'.format(p))
         dtl.training = corrupt_data(dtl.training, dtl.get_classes(), p / 100.)
         # print('\nCorrupted data:')
         # print(dtl.training)
