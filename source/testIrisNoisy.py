@@ -15,13 +15,18 @@
 # imports
 from learner import Learner
 from utils import corrupt_data
+from sys import setrecursionlimit
+
+
+# change recursion limit to 1 million to prevent stack overflow
+setrecursionlimit(10**6)
 
 def main():
     '''main of the program'''
 
-    training_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\bool\\bool-train.txt'
-    testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\bool\\bool-test.txt'
-    attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\bool\\bool-attr.txt'
+    training_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-train.txt'
+    testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-test.txt'
+    attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
     debugging = False
     validation = True # higher accuracy when test data is used for vaildation
 
