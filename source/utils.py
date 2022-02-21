@@ -9,6 +9,12 @@
 
 from math import log2 as lg
 import random
+from itertools import chain, combinations
+
+
+def all_subsets(ss):
+    '''returns all subsets of a set'''
+    return chain(*map(lambda x: combinations(ss, x), range(0, len(ss)+1)))
 
 def log2(x):
     '''log2 of x with support of 0'''
@@ -17,7 +23,7 @@ def log2(x):
     else:
         return lg(x)
 
-# TODO: test this function
+
 def corrupt_data(data, classes, percent):
     '''corrupt the class labels of training examples from 0% to 20% (2% in-
     crement) by changing from the correct class to another class; output the

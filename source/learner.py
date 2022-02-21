@@ -7,9 +7,8 @@
 #   output a tree (or rule set)
 #############################################################
 
-from utils import log2
+from utils import log2, all_subsets
 from dtree import DNode, DTree
-
 
 class Learner:
 
@@ -32,8 +31,8 @@ class Learner:
 
         # if validation is true, then we will use the validation set
         if validation:
-            # extract 30% of training set for validation
-            cutoff = int(self.n_examples * 0.30)
+            # extract 20% of training set for validation
+            cutoff = int(self.n_examples * 0.20)
             self.validation = self.training[:cutoff]
             self.training = self.training[cutoff:]
             self.n_examples = len(self.training)
@@ -585,6 +584,10 @@ class Learner:
         '''
         check if the antecent is satisfied
         '''
+        # check if the antecent is empty
+        if len(antecent) == 0:
+            raise Exception('Antecent is empty')
+
         for a in antecent:
             attr, value = a.split('=')
             if '<' in attr or '>' in attr:
@@ -597,6 +600,28 @@ class Learner:
 
         return True
     
+    def classify_rules(self, rules, instance):
+        '''
+        rule based classification
+        '''
+         # check if tree is rule based
+        if len(rules) > 0:
+            for rule in rules:
+                ante, cons = rule.split('=>')
+                ante = ante.replace(' ', '').split('^')
+                cons = cons.strip().split(' ')
+                # if self.debug:
+                #     print(ante, cons)
+
+                # check if antecedent is satisfied
+                if self.is_satisfied(instance, ante):
+                    if self.debug:
+                        print('Antecedent is satisfied')
+                        print('Class: ', cons[0], 'distribution: ', cons[1])
+                    return cons[0], cons[1]
+                # return self.eval_rule(rule, instance)
+            return None, None
+                    
     def classify(self, tree, instance):
         '''
         Classify an instance
@@ -724,7 +749,9 @@ class Learner:
 
         # if self.debug:
         #     print(ante, cons)
-
+        # check if antecedent is empty
+        if len(ante) == 0:
+            raise Exception('Antecedent is empty')
         # check if antecedent is satisfied
         if self.is_satisfied(instance, ante):
             if self.debug:
@@ -734,18 +761,15 @@ class Learner:
         
         return None, None
 
-    def rule_accuracy(self, rule, testing=None):
-        '''
-        Calculate the accuracy of a rule
-        '''
+    
+    def test_rules(self, rules: list, testing=None):
+        '''test the decision tree'''
         testing = self.testing if testing is None else testing
 
         # get the number of correct classifications
         correct = 0
         for instance in testing:
-            output_c, c_dist = self.eval_rule(rule, instance)
-            if output_c is None:
-                continue
+            output_c, c_dist = self.classify_rules(rules, instance)
 
             if self.debug:
                 # print output and label
@@ -764,52 +788,88 @@ class Learner:
 
         return accuracy
 
-    def prune_rule(self, rule, validation):
-        '''prune a rule recursively'''
-        # get the accuracy of the rule
-        accuracy = self.rule_accuracy(rule, validation)
+    # def rule_accuracy(self, rule, testing=None):
+    #     '''
+    #     Calculate the accuracy of a rule
+    #     '''
+    #     testing = self.testing if testing is None else testing
 
-        # if the rule is already accurate
-        if accuracy == 100:
-            return rule, accuracy
+    #     # get the number of correct classifications
+    #     correct = 0
+    #     for instance in testing:
+    #         output_c, c_dist = self.eval_rule(rule, instance)
+    #         if output_c is None:
+    #             continue
 
-        if len(rule) == 0:
-            return None, 0.0
-
-        # get the prior accuracy
-        max_acc = self.rule_accuracy(rule, validation)
-
-        # get all antecedents
-        ante, _ = rule.split('=>')
-        ante = ante.replace(' ', '').split('^')
-
-        # get all possible antecedents
-        # possible_antecedents = []
-    
-        
-        for a in reversed(ante): 
-            copy = rule               
-            # remove the antecendent from the rule
-            copy.replace(a, '')
-            copy.strip(' ^') # cleanup the rule after pruning
-
-            # get the post accuracy
-            acc = self.rule_accuracy(copy, validation)
-
-            if acc > max_acc:
-                max_acc = acc
-                # explore combinations of antecedents
-                # r, a = self.prune_rule(copy, validation)
-
-                # if a > max_acc:
-                #     max_acc = a
-                #     rule = r
-                # else:
-                rule = copy
-
-                # break
+    #         if self.debug:
+    #             # print output and label
+    #             print('Output: ', output_c, ' Label: ', instance[-1])
             
-        return rule, max_acc
+    #         # if the output is correct
+    #         if output_c == instance[-1]:
+    #             correct += 1
+
+    #     # get the accuracy
+    #     accuracy = 100 * correct / len(testing)
+
+    #     # print the accuracy
+    #     if self.debug:
+    #         print(f'Accuracy: {accuracy} %')
+
+    #     return accuracy
+
+    # def prune_rule(self, rule, validation):
+    #     '''prune a rule recursively'''
+        
+    #     # get the accuracy of the rule
+    #     best, best_acc = rule, self.rule_accuracy(rule, validation)
+
+    #     # if the rule is already accurate
+    #     if best_acc == 100:
+    #         return best, best_acc
+
+    #     if len(rule) == 0:
+    #         return None, 0.0
+
+
+    #     # get all antecedents
+    #     ante, _ = rule.split('=>')
+    #     ante = ante.split('^')
+
+    #     # clean up spaces in ante
+    #     for i in range(len(ante)):
+    #         ante[i] = ante[i].strip()
+
+    #     # get all possible antecedents combinations lazily
+    #     for a_sub in all_subsets(ante): 
+
+    #         # if a_sub is empty
+    #         if len(a_sub) == 0 or len(a_sub) == len(ante):
+    #             continue
+        
+    #         copy = rule           
+    #         # remove the antecendent from the rule
+    #         copy = copy.replace(' ^ '.join(a_sub), '').strip(' ^')
+    #         # cleanup the rule after pruning
+    #         copy = copy.replace('^  =>', '=>').strip()
+    #         copy = copy.replace('^  ^', ' ^').strip()
+    #         # get the post accuracy
+    #         acc = self.rule_accuracy(copy, validation)
+
+    #         if acc >= best_acc:
+    #             best_acc = acc
+    #             # explore combinations of antecedents
+    #             # r, a = self.prune_rule(copy, validation)
+
+    #             # if a >= max_acc:
+    #             #     max_acc = a
+    #             #     rule = r
+    #             # else:
+    #             best = copy
+
+    #             # break
+        
+    #     return best, best_acc
 
 
     # TODO: test this function with large dataset
@@ -829,14 +889,51 @@ class Learner:
             self.tree_to_rules(tree)
         
         rules = tree.rules
+        # get best accuracy
+        best_acc = self.test_rules(rules, validation)
+        best = None
         # for each rule
         for r in range(len(rules)):
             rule = rules[r]
-            best, acc = self.prune_rule(rule, validation)
+            # best, acc = self.prune_rule(rule, validation)
+
+             # get all antecedents
+            ante, _ = rule.split('=>')
+            ante = ante.split('^')
+
+            # clean up spaces in ante
+            for i in range(len(ante)):
+                ante[i] = ante[i].strip()
+
+            # get all possible antecedents combinations lazily
+            for a_sub in all_subsets(ante): 
+
+                # if a_sub is empty
+                if len(a_sub) == 0 or len(a_sub) == len(ante):
+                    continue
+            
+                copy = rule           
+                # remove the antecendent from the rule
+                copy = copy.replace(' ^ '.join(a_sub), '').strip(' ^')
+                # cleanup the rule after pruning
+                copy = copy.replace('^  =>', '=>').strip()
+                copy = copy.replace('^  ^', ' ^').strip()
+
+                rules[r] = copy
+                # get the post accuracy
+                acc = self.test_rules(rules, validation)
+
+                # better rule found
+                if acc >= best_acc:
+                    best_acc = acc
+                    best = rule
+                # undo the changes
+                else:
+                    rules[r] = rule
             
             if self.debug:
                 print('Rule: ', rule)
-                print('Accuracy: ', acc)
+                print('Accuracy: ', best_acc)
                 print('Best: ', best)
         
             rules[r] = best

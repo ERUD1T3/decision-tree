@@ -19,12 +19,15 @@ from utils import corrupt_data
 def main():
     '''main of the program'''
 
-    training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-train.txt'
-    testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-test.txt'
-    attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-attr.txt'
+    # training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-train.txt'
+    # testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-test.txt'
+    # attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-attr.txt'
     # training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-train.txt'
     # testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-test.txt'
     # attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-attr.txt'
+    training_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-train.txt'
+    testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-test.txt'
+    attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
     debugging = False
     validation = True
 
@@ -39,6 +42,9 @@ def main():
 
     # start of the experiment 
     for p in range(0, 20, 2):
+
+
+        print('////////////////////////////////////////////////////////////')
         # corrupt the data'
         print('\nCorrupting the data by changing from the correct class to another class...')
         dtl.training = corrupt_data(dtl.training, dtl.get_classes(), p / 100.)
@@ -66,7 +72,7 @@ def main():
 
         print('\n Pruning the tree...\n')
         # prune the tree
-        dtl.rule_post_pruning(tree, dtl.validation)
+        tree = dtl.rule_post_pruning(tree, dtl.validation)
         tree.print_rules()
 
         # print('\nTesting the rules on training data\n')
