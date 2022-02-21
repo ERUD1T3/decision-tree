@@ -32,7 +32,7 @@ class Learner:
         # if validation is true, then we will use the validation set
         if validation:
             # extract 20% of training set for validation
-            cutoff = int(self.n_examples * 0.20)
+            cutoff = int(self.n_examples * 0.40)
             self.validation = self.training[:cutoff]
             self.training = self.training[cutoff:]
             self.n_examples = len(self.training)
@@ -924,7 +924,7 @@ class Learner:
                 acc = self.test_rules(rules, validation)
 
                 # better rule found
-                if acc >= best_acc:
+                if acc > best_acc:
                     best_acc = acc
                     best = rule
                 # undo the changes
@@ -936,8 +936,8 @@ class Learner:
                 print('Accuracy: ', best_acc)
                 print('Best: ', best)
         
-            rules[r] = best
-            accuracies.append(acc)
+            # rules[r] = best
+            accuracies.append(best_acc)
 
         # sort the rules by accuracy descending
         accuracies, rules = zip(*sorted(zip(accuracies, rules), reverse=True))
