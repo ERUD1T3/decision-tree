@@ -19,17 +19,11 @@ from utils import corrupt_data
 def main():
     '''main of the program'''
 
-    # training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-train.txt'
-    # testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-test.txt'
-    # attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-attr.txt'
-    # training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-train.txt'
-    # testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-test.txt'
-    # attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-attr.txt'
-    training_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-train.txt'
-    testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-test.txt'
-    attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
+    training_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\bool\\bool-train.txt'
+    testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\bool\\bool-test.txt'
+    attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\bool\\bool-attr.txt'
     debugging = False
-    validation = True
+    validation = True # higher accuracy when test data is used for vaildation
 
     # create learner
     dtl = Learner(
@@ -41,7 +35,7 @@ def main():
     )
 
     # start of the experiment 
-    for p in range(0, 20, 2):
+    for p in range(0, 22, 2):
 
 
         print('////////////////////////////////////////////////////////////')
