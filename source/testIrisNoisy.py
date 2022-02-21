@@ -29,7 +29,7 @@ def main():
     testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-test.txt'
     attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
     debugging = False
-    validation = False
+    validation = True
 
     # create learner
     dtl = Learner(
@@ -72,7 +72,7 @@ def main():
 
         print('\n Pruning the tree...\n')
         # prune the tree
-        dtl.rule_post_pruning(tree, dtl.testing)
+        dtl.rule_post_pruning(tree, dtl.validation)
         tree.print_rules()
 
         # print('\nTesting the rules on training data\n')
