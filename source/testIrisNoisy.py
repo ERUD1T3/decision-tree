@@ -72,7 +72,7 @@ def main():
 
         print('\n Pruning the tree...\n')
         # prune the tree
-        dtl.rule_post_pruning(tree, dtl.validation)
+        tree = dtl.rule_post_pruning(tree, dtl.validation)
         tree.print_rules()
 
         # print('\nTesting the rules on training data\n')

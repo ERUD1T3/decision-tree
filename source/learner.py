@@ -32,7 +32,7 @@ class Learner:
         # if validation is true, then we will use the validation set
         if validation:
             # extract 20% of training set for validation
-            cutoff = int(self.n_examples * 0.50)
+            cutoff = int(self.n_examples * 0.20) # sensistive to size of validation set
             self.validation = self.training[:cutoff]
             self.training = self.training[cutoff:]
             self.n_examples = len(self.training)
@@ -792,22 +792,27 @@ class Learner:
             ante[i] = ante[i].strip()
 
         # get all possible antecedents combinations lazily
-        for a_sub in all_subsets(ante): 
+        # for a_sub in all_subsets(ante): 
+        for a_sub in reversed(ante):
+            if len(ante) == 1:
+                continue
 
             # if a_sub is empty
             if len(a_sub) == 0 or len(a_sub) == len(ante):
                 continue
-        
+            
+
             copy = rule           
             # remove the antecendent from the rule
-            copy = copy.replace(' ^ '.join(a_sub), '').strip(' ^')
+            # copy = copy.replace(' ^ '.join(a_sub), '').strip(' ^')
+            copy = copy.replace(a_sub, '').strip(' ^')
             # cleanup the rule after pruning
             copy = copy.replace('^  =>', '=>').strip()
             copy = copy.replace('^  ^', ' ^').strip()
             # get the post accuracy
             acc = self.rule_accuracy(copy, validation)
 
-            if acc > best_acc:
+            if acc >= best_acc:
                 best_acc = acc
                 # explore combinations of antecedents
                 # r, a = self.prune_rule(copy, validation)
