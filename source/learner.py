@@ -7,7 +7,7 @@
 #   output a tree (or rule set)
 #############################################################
 
-from utils import log2, all_subsets
+from utils import log2, consolidate_rules
 from dtree import DNode, DTree
 
 class Learner:
@@ -821,7 +821,7 @@ class Learner:
             copy = copy.replace(' ^ '.join(to_remove), '').strip(' ^')
             # copy = copy.replace(a_sub, '').strip(' ^')
             # cleanup the rule after pruning
-            copy = copy.replace('^  =>', '=>').strip()
+            copy = copy.replace('^  =>', '=>').replace('^ =>', '=>').strip()
             copy = copy.replace('^  ^', ' ^').strip()
             # get the post accuracy
             acc = self.rule_accuracy(copy, validation)
@@ -948,6 +948,7 @@ class Learner:
                 print(f'{rules[r]}, {accuracies[r]}')
 
         # get the best rules on the tree
+        # tree.rules = consolidate_rules(rules)
         tree.rules = rules
 
         return tree

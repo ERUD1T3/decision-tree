@@ -14,12 +14,8 @@
 
 # imports
 from learner import Learner
-from utils import corrupt_data
-# from sys import setrecursionlimit
+from utils import corrupt_data, consolidate_rules
 
-
-# change recursion limit to 1 million to prevent stack overflow
-# setrecursionlimit(10**9)
 
 def main():
     '''main of the program'''
@@ -55,11 +51,6 @@ def main():
         # run the program
         tree = dtl.learn()
 
-        # print('\nTesting the tree on training data\n')
-        # # testing tree on training data
-        # training_acc = dtl.test(tree, dtl.training)
-        # print('\nTraining accuracy: ', training_acc)
-
         print('\nTesting the tree on uncorrupted testing data\n')
         # testing tree on test data
         testing_acc = dtl.test(tree, dtl.testing)
@@ -73,19 +64,13 @@ def main():
         print('\n Pruning the tree...\n')
         # prune the tree
         tree = dtl.rule_post_pruning(tree, dtl.validation)
+        tree.rules = consolidate_rules(tree.rules)
         tree.print_rules()
-
-        # print('\nTesting the rules on training data\n')
-        # # testing tree on test data
-        # training_acc = dtl.test(tree, dtl.training)
-        # print('\nTraining accuracy: ', training_acc)
 
         print('\nTesting the rules on uncorrupted testing data\n')
         # testing tree on test data
         testing_acc = dtl.test(tree, dtl.testing)
         print('\nTesting accuracy: ', testing_acc)
-
-        # break
 
     
 if __name__ == '__main__':
