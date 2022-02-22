@@ -12,6 +12,7 @@
 
 # imports
 from learner import Learner
+from utils import consolidate_rules
 
 def main():
     '''main of the program'''
@@ -43,10 +44,12 @@ def main():
     print('\nPrinting the decision tree rules\n')
     # print the rules
     dtl.tree_to_rules(tree)    
-
-    print('\n Pruning the tree...\n')
+    tree.print_rules()
+    
+    print('\nPruning the tree...\n')
     # prune the tree
     dtl.rule_post_pruning(tree, dtl.testing)
+    tree.rules = consolidate_rules(tree.rules)
     tree.print_rules()
 
     print('\nTesting the rules on training data\n')

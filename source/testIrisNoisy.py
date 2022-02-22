@@ -61,7 +61,7 @@ def main():
         dtl.tree_to_rules(tree)    
         tree.print_rules()
 
-        print('\n Pruning the tree...\n')
+        print('\nPruning the tree...\n')
         # prune the tree
         tree = dtl.rule_post_pruning(tree, dtl.validation)
         tree.rules = consolidate_rules(tree.rules)
