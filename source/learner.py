@@ -821,7 +821,7 @@ class Learner:
             copy = copy.replace(' ^ '.join(to_remove), '').strip(' ^')
             # copy = copy.replace(a_sub, '').strip(' ^')
             # cleanup the rule after pruning
-            copy = copy.replace('^  =>', '=>').replace('^ =>', '=>').strip()
+            copy = copy.replace('^  =>', '=>').replace('^  =>', '=>').strip()
             copy = copy.replace('^  ^', ' ^').strip()
             # get the post accuracy
             acc = self.rule_accuracy(copy, validation)
