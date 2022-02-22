@@ -15,11 +15,11 @@
 # imports
 from learner import Learner
 from utils import corrupt_data
-from sys import setrecursionlimit
+# from sys import setrecursionlimit
 
 
 # change recursion limit to 1 million to prevent stack overflow
-setrecursionlimit(10**6)
+# setrecursionlimit(10**9)
 
 def main():
     '''main of the program'''

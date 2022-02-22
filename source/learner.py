@@ -508,25 +508,38 @@ class Learner:
                 leaf.class_distribution = self.get_class_distribution(data)
                 root.add_child('T', leaf)
 
-            else: # not empty positive subset
-                # create the child node
-                child = self.ID3_build(pos_subset, target_attr, attrs_to_test)
-                child.parent = root
-                root.add_child('T', child)
-
+                leaf = DNode(self.get_best_class(neg_subset))
+                leaf.is_terminal = True
+                leaf.parent = root
+                leaf.class_distribution = self.get_class_distribution(neg_subset)
+                root.add_child('F', leaf)
+                
             # if empty negative subset
-            if len(neg_subset) == 0:
+            elif len(neg_subset) == 0:
+                leaf = DNode(self.get_best_class(pos_subset))
+                leaf.is_terminal = True
+                leaf.parent = root
+                leaf.class_distribution = self.get_class_distribution(pos_subset)
+                root.add_child('T', leaf)
+
                 leaf = DNode(self.get_best_class(data))
                 leaf.is_terminal = True
                 leaf.parent = root
                 leaf.class_distribution = self.get_class_distribution(data)
                 root.add_child('F', leaf)
+
+            else: # not empty positive subset
+                # create the left child node
+                lchild = self.ID3_build(pos_subset, target_attr, attrs_to_test)
+                lchild.parent = root
+                root.add_child('T', lchild)
             
-            else: # not empty negative subset
-                # create the child node
-                child = self.ID3_build(neg_subset, target_attr, attrs_to_test)
-                child.parent = root
-                root.add_child('F', child)
+                # create the right child node
+                rchild = self.ID3_build(neg_subset, target_attr, attrs_to_test)
+                rchild.parent = root
+                root.add_child('F', rchild)
+
+                
 
         else: # not discretized
             # get the values of the attribute
