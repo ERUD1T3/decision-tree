@@ -59,13 +59,13 @@ def main():
         print('\nPrinting the decision tree rules\n')
         # print the rules
         dtl.tree_to_rules(tree)    
-        tree.print_rules()
+        # tree.print_rules()
 
         print('\nPruning the tree...\n')
         # prune the tree
         tree = dtl.rule_post_pruning(tree, dtl.validation)
         tree.rules = consolidate_rules(tree.rules)
-        tree.print_rules()
+        # tree.print_rules()
 
         print('\nTesting the rules on uncorrupted testing data\n')
         # testing tree on test data
