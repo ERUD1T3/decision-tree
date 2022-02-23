@@ -7,7 +7,7 @@
 #   output a tree (or rule set)
 #############################################################
 
-from utils import log2, consolidate_rules
+from utils import log2
 from dtree import DNode, DTree
 
 class Learner:
