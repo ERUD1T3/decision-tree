@@ -1,7 +1,7 @@
 ############################################################
 #   Dev: Josias Moukpe
 #   Class: Machine Learning
-#   Date: 2/7/2022
+#   Date: 2/22/2022
 #   file: main.py
 #   Description: main file to run the program
 #############################################################
@@ -9,6 +9,7 @@
 # imports
 import argparse
 from learner import Learner
+from utils import consolidate_rules
 
 
 def parse_args():
@@ -47,6 +48,13 @@ def parse_args():
         help='debug mode, prints statements activated (optional)'
     )
     
+    parser.add_argument(
+        '--prune',
+        action='store_true',
+        default=False,
+        help='prune the tree using rule post pruning (optional)'
+    )
+
     # parse arguments
     args = parser.parse_args()
     return args
@@ -61,6 +69,7 @@ def main():
     testing_path = args.testing
     attributes_path = args.attributes
     debugging = args.debug
+    prune = args.prune
 
 
     print('\nLearning the decision tree...\n')
@@ -74,23 +83,27 @@ def main():
 
     print('\nTesting the tree on testing data\n')
     # testing tree on test data
-    dtl.test(tree)
+    dtl.test(tree, dtl.testing)
 
-    print('\nPrinting the decision tree rules\n')
-    # print the rules
-    dtl.tree_to_rules(tree)    
 
-    # print('\nTesting the rules on testing data\n')
-    # # testing tree on test data
-    # dtl.test(tree)
+    if prune:
+        print('\nPrinting the decision tree rules before pruning\n')
+        # print the rules
+        dtl.tree_to_rules(tree)  
+        tree.print_rules()  
 
-    # print('\n Pruning the tree...\n')
-    # # prune the tree
-    # dtl.rule_post_pruning(tree, dtl.testing)
+    
+        print('\n Pruning the tree...\n')
+        # prune the tree
+        dtl.rule_post_pruning(tree, dtl.testing)
+        print('\nPrinting the decision tree rules after pruning\n')
+        # consolidate rules
+        tree.rules = consolidate_rules(tree.rules)
+        tree.print_rules()
 
-    # print('\nTesting the tree post pruning\n')
-    # # testing tree on test data
-    # dtl.test(tree)
+        print('\nTesting the tree post pruning\n')
+        # testing tree on test data
+        dtl.test(tree, dtl.testing)
 
 
     

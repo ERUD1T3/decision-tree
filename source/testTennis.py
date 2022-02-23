@@ -1,7 +1,7 @@
 ############################################################
 #   Dev: Josias Moukpe
 #   Class: Machine Learning
-#   Date: 2/7/2022
+#   Date: 2/22/2022
 #   file: testTennis.py
 #   Description: print the tree, tree accuracy on
 #   the training and test sets, the rules, rule
@@ -15,9 +15,9 @@ from learner import Learner
 
 def main():
     '''main of the program'''
-    training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-train.txt'
-    testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-test.txt'
-    attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\tennis\\tennis-attr.txt'
+    training_path = 'data/tennis/tennis-train.txt'
+    testing_path = 'data/tennis/tennis-test.txt'
+    attributes_path = 'data/tennis/tennis-attr.txt'
     debugging = False
 
 

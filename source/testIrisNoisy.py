@@ -1,7 +1,7 @@
 ############################################################
 #   Dev: Josias Moukpe
 #   Class: Machine Learning
-#   Date: 2/7/2022
+#   Date: 2/22/2022
 #   file: testTennis.py
 #   Description: corrupt the class labels of
 #   training examples from 0% to 20% (2% in-
@@ -20,9 +20,9 @@ from utils import corrupt_data, consolidate_rules
 def main():
     '''main of the program'''
 
-    training_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-train.txt'
-    testing_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-test.txt'
-    attributes_path = 'C:\\Users\\the_3\\Desktop\\College\\Spring2022\\ML\\decision-tree\\data\\iris\\iris-attr.txt'
+    training_path = 'data/iris/iris-train.txt'
+    testing_path = 'data/iris/iris-test.txt'
+    attributes_path = 'data/iris/iris-attr.txt'
     debugging = False
     validation = True # higher accuracy when test data is used for vaildation
 

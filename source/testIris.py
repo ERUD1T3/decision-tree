@@ -1,7 +1,7 @@
 ############################################################
 #   Dev: Josias Moukpe
 #   Class: Machine Learning
-#   Date: 2/7/2022
+#   Date: 2/22/2022
 #   file: testIris.py
 #   Description: print the tree, tree accuracy on the
 #   training and test sets, the rules after post-
@@ -17,9 +17,9 @@ from utils import consolidate_rules
 def main():
     '''main of the program'''
 
-    training_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-train.txt'
-    testing_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-test.txt'
-    attributes_path = 'C:\\Users\\the_3\\OneDrive\\Desktop\\decision-tree\\data\\iris\\iris-attr.txt'
+    training_path = 'data/iris/iris-train.txt'
+    testing_path = 'data/iris/iris-test.txt'
+    attributes_path = 'data/iris/iris-attr.txt'
     debugging = False
 
 
