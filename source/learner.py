@@ -224,17 +224,6 @@ class Learner:
         
         return split_info
 
-    def gain_ratio(self, data, attribute: str):
-        '''
-        Calculate the gain ratio
-        '''
-        # getting the information gain
-        gain = self.gain(data, attribute)
-        # getting the split information
-        split_info = self.split_information(data, attribute)
-
-        return gain / split_info
-
     def get_best_discretized_attribute(self, data, d_attr_to_test):
         '''
         Get best discretize attribute
@@ -257,32 +246,17 @@ class Learner:
 
         return best_gain, best_attr
 
+    # TODO: update to support gain ratio selection of attributes
     def get_best_attribute(self, data, attrs_to_test: list()):
         '''
         Get the best attribute to split the data
         '''
         # getting the attributes
-        attr_iter = iter(attrs_to_test)
-        # getting the first attribute
-        attr = next(attr_iter)
         gain = 0.0
-        max_gain, max_attr = 0.0, None
-
-        # attribute is continuous
-        if self.is_continuous(attr):
-            # get discretized attributes from attr
-            discretized, _ = self.continuous_to_discrete(attr, data)
-            # get the best discretized attribute
-            max_gain, max_attr = self.get_best_discretized_attribute(data, discretized)
-        # attribute is discrete
-        else:
-            max_gain, max_attr = self.gain(data, attr), attr
-
-            if self.debug:
-                print('Gain for attribute: ', max_attr, ' is: ', max_gain)
+        attr_gains = {}
 
         # getting the best attribute for root node
-        for a in attr_iter:
+        for a in attrs_to_test:
             # attribute is continuous
             if self.is_continuous(a):
                 # get discretized attributes from attr
@@ -298,14 +272,35 @@ class Learner:
             if self.debug:
                 print('Gain for attribute: ', attr, ' is: ', gain)
 
-            # updating the best attribute
-            if gain > max_gain:
-                max_gain, max_attr = gain, attr
+            # add attribute to dictionary
+            attr_gains[attr] = gain
+        
+        # find average gain
+        avg_gain = sum(attr_gains.values()) / len(attr_gains)
+
+        # find attributes with above average gain
+        attr_gain_ratio = {a:0 for a in attr_gains if attr_gains[a] > avg_gain}
+
+        # calculate the gain ratio for each above average attribute
+        for a in attr_gain_ratio:
+            # get split information
+            split_info = self.split_information(data, a)
+            # getting the gain ratio
+            gain_ratio = attr_gains[a] / split_info
+            # updating the gain ratio
+            attr_gain_ratio[a] = gain_ratio
+
+        # get the best attribute
+        if len(attr_gain_ratio) > 0:
+            best_attr = max(attr_gain_ratio, key=attr_gain_ratio.get)
+        else:
+            best_attr = max(attr_gains, key=attr_gains.get)
+
 
         if self.debug:
-            print('Best attribute: ', max_attr, ' with gain: ', max_gain)
+            print('Best attribute: ', best_attr, ' with gain: ', attr_gains[best_attr])
 
-        return max_attr
+        return best_attr
 
 
     def are_same(self, data):
@@ -832,16 +827,8 @@ class Learner:
             if acc > best_acc + offset:
                 best_acc = acc
                 # explore combinations of antecedents
-                # r, a = self.prune_rule(copy, validation)
-
-                # if a >= max_acc:
-                #     max_acc = a
-                #     rule = r
-                # else:
                 best = copy
 
-                # break
-        
         return best, best_acc
 
     def test_rules(self, rules: list, testing=None):
